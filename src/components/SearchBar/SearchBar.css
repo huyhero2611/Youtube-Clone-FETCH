@@ -1,0 +1,13 @@
+.searchbar-main {
+  width: 50vw;
+  display: flex;
+}
+
+.searchbar-input {
+  width: 70%;
+}
+
+.searchbar-logo {
+  height: inherit;
+  width: 4vmin;
+}
