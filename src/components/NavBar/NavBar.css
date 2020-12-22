@@ -1,0 +1,10 @@
+.navbar-item {
+  height: 2.5rem;
+}
+
+.navbar-icons {
+  margin: 0px 1.5rem;
+}
+
+.navbar-item > p {
+}

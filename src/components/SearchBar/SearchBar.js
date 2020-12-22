@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
-import baseApi from "../../api/baseApi";
+import { SearchRequest, getMostPopularVideos } from "../../api/baseApi";
 import { TextField, Button } from "@material-ui/core";
 import { Search } from "@material-ui/icons";
 import "./SearchBar.css";
@@ -12,17 +12,23 @@ function SearchBar(props) {
   const [search, setSearch] = useState("");
 
   const handleSubmit = (e) => {
-    baseApi
-      .get("/search", {
-        params: {
-          q: search,
-        },
-      })
-      .then((res) => {
-        const test = res.data.items.map((test1, index) => {
-          console.log(test1.snippet);
-        });
-      });
+    // baseApi
+    //   .get("/search", {
+    //     params: {
+    //       q: search,
+    //     },
+    //   })
+    //   .then((res) => {
+    //     const test = res.data.items.map((test1, index) => {
+    //       console.log(test1.snippet);
+    //       setSearch("");
+    //     });
+    //   });
+    const test = SearchRequest(search);
+    const test2 = getMostPopularVideos();
+    console.log(test);
+    console.log("haha");
+    console.log(test2);
     e.preventDefault();
   };
 
