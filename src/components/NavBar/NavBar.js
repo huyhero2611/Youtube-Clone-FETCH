@@ -22,7 +22,7 @@ NavBar.propTypes = {};
 
 function NavBar(props) {
   return (
-    <div>
+    <div className="navbar">
       <MenuList>
         <MenuItem className="navbar-item">
           <span className="navbar-icons">

@@ -38,14 +38,22 @@ function App() {
 
   return (
     <div className={classes.root}>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
+      <Grid container spacing={0}>
+        <Grid
+          style={{ position: "fixed", top: "0", width: "100%", zIndex: "1000" }}
+          item
+          xs={12}
+        >
           <Header />
         </Grid>
-        <Grid className="" item xs={2}>
+        <Grid
+          style={{ position: "fixed", top: "8vmin", width: "100%" }}
+          item
+          xs={2}
+        >
           <NavBar />
         </Grid>
-        <Grid item xs={10}>
+        <Grid style={{ marginTop: "8vmin", marginLeft: "28vmin" }} item xs={10}>
           <Router>
             <Switch>{RoutesManagement()}</Switch>
           </Router>

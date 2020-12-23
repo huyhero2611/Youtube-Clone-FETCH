@@ -1,3 +1,9 @@
+.navbar {
+  max-width: 100%;
+  background-color: white;
+  height: 100vh;
+}
+
 .navbar-item {
   height: 2.5rem;
 }
@@ -7,4 +13,14 @@
 }
 
 .navbar-item > p {
+}
+
+.MuiGrid-spacing-xs-2 > .MuiGrid-item {
+  padding: 0px !important;
+}
+
+.MuiGrid-grid-xs-2 {
+  flex-grow: 0;
+  max-width: 13.666667% !important;
+  flex-basis: 16.666667%;
 }

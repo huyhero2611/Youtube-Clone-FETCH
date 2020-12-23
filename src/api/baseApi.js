@@ -16,16 +16,19 @@ export const YouTubeAPI = axios.create({
   baseURL: "https://www.googleapis.com/youtube/v3",
 });
 
+// GET IMAGE CHANNEL
+export const getImageChannel = (idChannel) => {};
+
 //  FETCH MOST POPULAR VIDEOS
 export const getMostPopularVideos = async () => {
   const result = await YouTubeAPI.get("videos", {
     params: {
-      part: "snippet,statistics,contentDetails",
-      maxResults: 28,
+      part: "snippet,statistics",
+      maxResults: 25,
       chart: "mostPopular",
       key: "AIzaSyBvW9hL8LcRCGyTYUuLykpdjp064Vou0OY",
     },
-  }).then(({ data }) => data);
+  }).then(({ data }) => data.items);
 
   return result;
 };
