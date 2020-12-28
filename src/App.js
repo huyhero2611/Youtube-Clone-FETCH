@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
 import routes from "./router";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
@@ -36,29 +36,60 @@ function App() {
   };
   const classes = useStyles();
 
+  const [viewport, setViewport] = useState(window.innerWidth > 1000);
+
   return (
     <div className={classes.root}>
-      <Grid container spacing={0}>
-        <Grid
-          style={{ position: "fixed", top: "0", width: "100%", zIndex: "1000" }}
-          item
-          xs={12}
-        >
-          <Header />
-        </Grid>
-        <Grid
-          style={{ position: "fixed", top: "8vmin", width: "100%" }}
-          item
-          xs={2}
-        >
-          <NavBar />
-        </Grid>
-        <Grid style={{ marginTop: "8vmin", marginLeft: "28vmin" }} item xs={10}>
-          <Router>
+      <Router>
+        <Grid container spacing={0}>
+          <Grid
+            item
+            xs={12}
+            className="lg-12 md-12 sm-12 app__header"
+            // style={{
+            //   position: "fixed",
+            //   top: 0,
+            //   right: 0,
+            //   left: 0,
+            //   height: "50px",
+            //   zIndex: 1,
+            // }}
+          >
+            <Header />
+          </Grid>
+          {/* viewport of navbar > 739px */}
+          <Grid
+            item
+            className="lg-2 md-2 sm-2 app__navbar"
+            xs={2}
+            className="app__navbar"
+            // style={{
+            //   position: "fixed",
+            //   top: "50px",
+            //   left: 0,
+            //   zIndex: 1,
+            //   paddingTop: "20px",
+            // }}
+          >
+            <NavBar />
+          </Grid>
+          <Grid
+            item
+            className="lg-10 md-10 sm-10 app__content"
+            xs={10}
+            justify="space-around"
+            // style={{
+            //   position: "relative",
+            //   left: "300px",
+            //   top: "50px",
+            //   paddingTop: "20px",
+            //   zIndex: 0,
+            // }}
+          >
             <Switch>{RoutesManagement()}</Switch>
-          </Router>
+          </Grid>
         </Grid>
-      </Grid>
+      </Router>
     </div>
   );
 }

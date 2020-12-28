@@ -1,13 +1,37 @@
-.searchbar-main {
-  width: 50vw;
+/* PC */
+.searchbar {
   display: flex;
+  justify-content: center;
 }
 
-.searchbar-input {
-  width: 70%;
+.searchbar__input {
+  width: 50%;
+  font-size: 1.2em;
 }
 
-.searchbar-logo {
-  height: inherit;
-  width: 4vmin;
+.searchbar__btn {
+  /* height: inherit; */
+  width: 55px;
+  height: 35px;
+  justify-content: center;
+}
+
+/* Tablet */
+@media (min-width: 740px) and (max-width: 1023px) {
+  .searchbar__input {
+    width: 85%;
+  }
+  .searchbar__btn {
+    display: none;
+  }
+}
+
+/* Mobile */
+@media (max-width: 739px) {
+  .searchbar__input {
+    width: 85%;
+  }
+  .searchbar__btn {
+    display: none;
+  }
 }

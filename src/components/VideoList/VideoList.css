@@ -1,3 +1,6 @@
-.videolist-item {
-  background-color: blue;
+.videolist {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  margin-right: 25px;
 }

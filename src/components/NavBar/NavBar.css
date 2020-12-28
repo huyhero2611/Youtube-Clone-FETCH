@@ -1,26 +1,54 @@
+.navbar__overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgb(0, 0, 0, 0.3);
+}
+
+/* PC */
 .navbar {
-  max-width: 100%;
   background-color: white;
+  max-width: 240px;
   height: 100vh;
 }
 
-.navbar-item {
-  height: 2.5rem;
+.navbar__icons {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.navbar-icons {
-  margin: 0px 1.5rem;
+.navbar__item p {
+  margin: 0;
 }
 
-.navbar-item > p {
+/* Tablet */
+@media (min-width: 740px) and (max-width: 1023px) {
+  .navbar {
+    max-width: 70px;
+  }
+
+  .navbar__item {
+    display: block !important;
+    width: 100% !important;
+    text-align: center;
+  }
+  .navbar__item p {
+    font-size: 10px;
+    position: relative;
+    left: -14px;
+    text-align: center;
+    width: 66px;
+  }
 }
 
-.MuiGrid-spacing-xs-2 > .MuiGrid-item {
-  padding: 0px !important;
-}
-
-.MuiGrid-grid-xs-2 {
-  flex-grow: 0;
-  max-width: 13.666667% !important;
-  flex-basis: 16.666667%;
+/* Mobile */
+@media (max-width: 739px) {
+  .navbar {
+    transform: translateX(-100%);
+  }
 }

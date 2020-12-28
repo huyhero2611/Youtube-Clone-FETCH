@@ -1,12 +1,10 @@
 .home {
-  margin-top: 3vmin;
-  margin-left: 5vmin;
-  /* position: absolute;
-  top: 10vmin;
-  overflow: auto; */
+  /* margin-top: 3vmin;
+  margin-left: 5vmin; */
+  /* background-color: greenyellow; */
 }
 
-.MuiGrid-spacing-xs-2 > .MuiGrid-item {
+/* .MuiGrid-spacing-xs-2 > .MuiGrid-item {
   padding: 15px;
 }
 
@@ -14,4 +12,4 @@
   flex-grow: 0;
   max-width: 100% - 13.666667% !important;
   flex-basis: 83.333333%;
-}
+} */

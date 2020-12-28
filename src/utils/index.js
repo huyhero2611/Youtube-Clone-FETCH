@@ -2,11 +2,11 @@ export const ViewNumberFormatter = (num) => {
   let FormatNum = 0;
 
   if (num >= 1000 && num < 1000000) {
-    FormatNum = Math.round((num / 1000) * 10) / 10 + " N";
+    FormatNum = Math.round((num / 1000) * 10) / 10 + " N lượt xem";
   } else if (num >= 1000000 && num < 1000000000) {
-    FormatNum = Math.round((num / 1000000) * 10) / 10 + " Tr";
+    FormatNum = Math.round((num / 1000000) * 10) / 10 + " Tr lượt xem";
   } else if (num >= 1000000000) {
-    FormatNum = Math.round((num / 1000000000) * 10) / 10 + " T";
+    FormatNum = Math.round((num / 1000000000) * 10) / 10 + " T lượt xem";
   } else {
     FormatNum = num;
   }

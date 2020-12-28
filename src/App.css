@@ -5,4 +5,22 @@
 
 html {
   background-color: #f9f9f9;
+  min-width: 500px;
+}
+
+.app__header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.app__navbar {
+  width: 250px;
+  position: sticky;
+  left: 0;
+  top: 50px;
+  z-index: 1;
+}
+
+@media (max-width: 739px) {
 }

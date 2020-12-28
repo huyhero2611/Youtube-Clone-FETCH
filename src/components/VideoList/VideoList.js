@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import VideoDetails from "../VideoDetails/VideoDetails";
 import { Grid, Paper } from "@material-ui/core";
+import "./VideoList.css";
 
 // test most popular
 import { getMostPopularVideos } from "../../api/baseApi";
@@ -16,23 +17,19 @@ function VideoList(props) {
 
   let listVideo = data.map((res) => {
     return (
-      <Grid item xs={3} className="videolist-item">
-        <VideoDetails
-          viewCount={res.statistics.viewCount}
-          title={res.snippet.title}
-          image={res.snippet.thumbnails.medium.url}
-          description={res.snippet.description}
-          publishedAt={res.snippet.publishedAt}
-        />
-      </Grid>
+      <VideoDetails
+        viewCount={res.statistics.viewCount}
+        title={res.snippet.title}
+        image={res.snippet.thumbnails.medium.url}
+        description={res.snippet.description}
+        publishedAt={res.snippet.publishedAt}
+        channelTitle={res.snippet.channelTitle}
+        videoId={res.id}
+      />
     );
   });
 
-  return (
-    <Grid container spacing={3}>
-      {listVideo}
-    </Grid>
-  );
+  return <div className="videolist">{listVideo}</div>;
 }
 
 export default VideoList;
