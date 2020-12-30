@@ -4,3 +4,8 @@
   flex-wrap: wrap;
   margin-right: 25px;
 }
+
+.videolist__result {
+  display: block;
+  padding-left: 100px;
+}

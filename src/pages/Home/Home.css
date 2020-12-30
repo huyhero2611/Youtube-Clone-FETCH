@@ -1,15 +1,11 @@
 .home {
-  /* margin-top: 3vmin;
-  margin-left: 5vmin; */
-  /* background-color: greenyellow; */
+  display: flex;
 }
 
-/* .MuiGrid-spacing-xs-2 > .MuiGrid-item {
-  padding: 15px;
+.app__navbar {
+  position: sticky;
+  left: 0;
 }
 
-.MuiGrid-grid-xs-10 {
-  flex-grow: 0;
-  max-width: 100% - 13.666667% !important;
-  flex-basis: 83.333333%;
-} */
+.home__content {
+}

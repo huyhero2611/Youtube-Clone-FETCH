@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import {
   MenuList,
   MenuItem,
@@ -18,8 +17,6 @@ import {
   ThumbUp,
 } from "@material-ui/icons";
 import "./NavBar.css";
-
-NavBar.propTypes = {};
 
 function NavBar(props) {
   return (

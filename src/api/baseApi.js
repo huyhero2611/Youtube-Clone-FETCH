@@ -1,35 +1,40 @@
-// import axios from "axios";
-
-// export default axios.create({
-//   baseURL: "https://youtube.googleapis.com/youtube/v3",
-//   params: {
-//     part: "snippet",
-//     maxResult: 5,
-//     key: "AIzaSyBvW9hL8LcRCGyTYUuLykpdjp064Vou0OY",
-//   },
-// });
-
 import axios from "axios";
 
+const APP_KEY = "AIzaSyBvW9hL8LcRCGyTYUuLykpdjp064Vou0OY";
+/*
+APP KEY
+huyhero2611     AIzaSyBvW9hL8LcRCGyTYUuLykpdjp064Vou0OY
+huynh26112000       AIzaSyB39Fa8R-tMxxsbfwHf0C7Hkc0xfyOwkiY
+18020644      AIzaSyDXces1UrddBMx7vReLTI3l7I709hzH5Ks
+*/
 // AXIOS INSTANCE
 export const YouTubeAPI = axios.create({
   baseURL: "https://www.googleapis.com/youtube/v3",
 });
-
-// GET IMAGE CHANNEL
-export const getImageChannel = (idChannel) => {};
 
 //  FETCH MOST POPULAR VIDEOS
 export const getMostPopularVideos = async () => {
   const result = await YouTubeAPI.get("videos", {
     params: {
       part: "snippet,statistics",
-      maxResults: 25,
+      maxResults: 24,
       chart: "mostPopular",
-      key: "AIzaSyBvW9hL8LcRCGyTYUuLykpdjp064Vou0OY",
+      key: APP_KEY,
     },
   }).then(({ data }) => data.items);
 
+  return result;
+};
+
+// GET VIDEO
+export const getVideoDetails = async (videoId) => {
+  const result = await YouTubeAPI.get("videos", {
+    params: {
+      part: "snippet, statistics",
+      id: videoId,
+      key: APP_KEY,
+    },
+  }).then(({ data }) => data.items);
   return result;
 };
 
@@ -53,10 +58,22 @@ export const SearchRequest = async (inputSearch) => {
       //     },
       {
         part: "snippet",
-        maxResults: 12,
+        maxResults: 20,
         q: inputSearch,
-        key: "AIzaSyBvW9hL8LcRCGyTYUuLykpdjp064Vou0OY",
+        key: APP_KEY,
       },
+  }).then(({ data }) => data.items);
+  return result;
+};
+
+// GET CHANNEL
+export const GetChannel = async (channelId) => {
+  const result = await YouTubeAPI.get("channels", {
+    params: {
+      part: "snippet, statistics",
+      id: channelId,
+      key: APP_KEY,
+    },
   }).then(({ data }) => data.items);
   return result;
 };
