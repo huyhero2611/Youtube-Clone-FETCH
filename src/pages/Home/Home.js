@@ -9,7 +9,7 @@ function Home() {
   return (
     <div className="home">
       <Grid container>
-        <Grid item className="lg-2 md-2 sm-2 app__navbar" xs={2}>
+        <Grid item className="lg-2 md-2 sm-2 home__navbar" xs={2}>
           <NavBar />
         </Grid>
         <Grid

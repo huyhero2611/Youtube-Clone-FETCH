@@ -11,7 +11,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { TimePublishToNow, ViewNumberFormatter } from "../../utils";
 import "./VideoDetails.css";
 import { Link } from "react-router-dom";
-import { getVideoDetails, GetChannel } from "../../api/baseApi";
+// import { getVideoDetails, GetChannel } from "../../api/baseApi";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,21 +42,15 @@ function VideoDetails(props) {
   // console.log(videoSrc);
   const classes = useStyles();
   const [page, setPage] = useState("");
-  const [urlChannel, setUrlChannel] = useState("");
-  useEffect(() => {
+
+  useEffect(async () => {
     if (window.location.pathname.includes("result")) {
       setPage("result");
     }
-    GetChannel(props.channelId).then((data) => {
-      data.map((item) => {
-        setUrlChannel(item.snippet.thumbnails.default.url);
-      });
-    });
-  }, []);
-
+  }, [window.location.pathname]);
   return (
     <div>
-      {page == "result" ? (
+      {page === "result" ? (
         // result page
         <div className="videodetails--result">
           <div className="videodetails__img">
@@ -73,13 +67,15 @@ function VideoDetails(props) {
           <div className="videodetails__content--result">
             <div className="videodetais__content--result--title">
               <p style={{ fontSize: "20px" }}>{props.title}</p>
-              {` ${TimePublishToNow(props.publishedAt)}`}
+              {`${ViewNumberFormatter(props.viewCount)}・${TimePublishToNow(
+                props.publishedAt
+              )}`}
             </div>
             <div
               style={{ display: "flex" }}
               className="videodetais__content--result--channel"
             >
-              <Avatar alt="Remy Sharp" src={urlChannel} />
+              <Avatar alt="Remy Sharp" src={props.channelImage} />
               <p>{props.channelTitle}</p>
             </div>
             <div className="videodetails__content--result--description">
@@ -102,14 +98,14 @@ function VideoDetails(props) {
 
           <div className="videodetails__content">
             <div className="videodetails__content--avatar">
-              <Avatar aria-label="recipe" className={classes.avatar}>
-                H
-              </Avatar>
+              <Avatar alt="Remy Sharp" src={props.channelImage} />
             </div>
             <div className="videodetails__content--info">
               <h3>{props.title}</h3>
               <h4>{props.channelTitle}</h4>
-              {` ${TimePublishToNow(props.publishedAt)}`}
+              {`${ViewNumberFormatter(props.viewCount)}・${TimePublishToNow(
+                props.publishedAt
+              )}`}
             </div>
           </div>
         </div>

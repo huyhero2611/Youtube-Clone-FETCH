@@ -2,10 +2,17 @@
   display: flex;
 }
 
-.app__navbar {
+.home__navbar {
   position: sticky;
   left: 0;
 }
 
 .home__content {
+  display: flex;
+}
+
+@media (max-width: 739px) {
+  .home__navbar {
+    transform: translateX(-100%);
+  }
 }

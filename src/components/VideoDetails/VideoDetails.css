@@ -2,6 +2,7 @@
 .videodetails {
   flex-basis: 23%;
   margin-top: 30px;
+  max-width: 320px;
 }
 
 .videodetails--result {
@@ -56,7 +57,7 @@ h4 {
     margin-right: 75px;
   }
   .videodetails__img {
-    width: 480px;
-    height: 275px;
+    /* width: 480px;
+    height: 275px; */
   }
 }
