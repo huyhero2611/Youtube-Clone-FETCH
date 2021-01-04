@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const APP_KEY = "AIzaSyAVACMSBQlsiECbg0LGwmh3XXsZLK7I7SY";
+const APP_KEY = "AIzaSyAe5StmTvlOGpufcLsRMcAM0sC2RexewgA";
 /*
 APP KEY
 huyhero2611     AIzaSyBvW9hL8LcRCGyTYUuLykpdjp064Vou0OY
@@ -16,8 +16,8 @@ export const YouTubeAPI = axios.create({
 });
 
 //  FETCH MOST POPULAR VIDEOS
-export const getMostPopularVideos = async () => {
-  const result = await YouTubeAPI.get("videos", {
+export const getMostPopularVideos = () => {
+  const result = YouTubeAPI.get("videos", {
     params: {
       part: "snippet,statistics",
       maxResults: 24,
@@ -30,8 +30,8 @@ export const getMostPopularVideos = async () => {
 };
 
 // GET VIDEO
-export const getVideoDetails = async (videoId) => {
-  const result = await YouTubeAPI.get("videos", {
+export const getVideoDetails = (videoId) => {
+  const result = YouTubeAPI.get("videos", {
     params: {
       part: "snippet, statistics",
       id: videoId,
@@ -42,8 +42,8 @@ export const getVideoDetails = async (videoId) => {
 };
 
 // SEARCH
-export const SearchRequest = async (inputSearch) => {
-  const result = await YouTubeAPI.get("search", {
+export const SearchRequest = (inputSearch) => {
+  const result = YouTubeAPI.get("search", {
     params:
       // parameter && option
       //   ? {
@@ -61,7 +61,7 @@ export const SearchRequest = async (inputSearch) => {
       //     },
       {
         part: "snippet",
-        maxResults: 5,
+        maxResults: 20,
         q: inputSearch,
         key: APP_KEY,
       },
@@ -78,5 +78,19 @@ export const GetChannel = (channelId) => {
       key: APP_KEY,
     },
   });
+  return result;
+};
+
+//RELATED TO VIDEO WATCHING
+export const GetRelatedToVideo = (videoId) => {
+  const result = YouTubeAPI.get("search", {
+    params: {
+      part: "snippet",
+      maxResults: 20,
+      relatedToVideoId: videoId,
+      type: "video",
+      key: APP_KEY,
+    },
+  }).then((data) => data.data.items);
   return result;
 };

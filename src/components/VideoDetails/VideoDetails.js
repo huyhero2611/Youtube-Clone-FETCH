@@ -7,7 +7,7 @@ import {
   Avatar,
   IconButton,
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, rgbToHex } from "@material-ui/core/styles";
 import { TimePublishToNow, ViewNumberFormatter } from "../../utils";
 import "./VideoDetails.css";
 import { Link } from "react-router-dom";
@@ -46,6 +46,8 @@ function VideoDetails(props) {
   useEffect(async () => {
     if (window.location.pathname.includes("result")) {
       setPage("result");
+    } else if (window.location.pathname.includes("watch")) {
+      setPage("watch");
     }
   }, [window.location.pathname]);
   return (
@@ -76,11 +78,44 @@ function VideoDetails(props) {
               className="videodetais__content--result--channel"
             >
               <Avatar alt="Remy Sharp" src={props.channelImage} />
-              <p>{props.channelTitle}</p>
+              <p style={{ color: "rgb(0, 0, 0, 0.6)" }}>{props.channelTitle}</p>
             </div>
-            <div className="videodetails__content--result--description">
-              <p>{props.description}</p>
-            </div>
+            {page === "result" ? (
+              <div className="videodetails__content--result--description">
+                <p>{props.description}</p>
+              </div>
+            ) : null}
+          </div>
+        </div>
+      ) : page == "watch" ? (
+        <div className="videodetails--watch">
+          <div className="videodetails__img--watch">
+            <Link
+              to={{
+                pathname: `/watch/${props.videoId}`,
+                data: { videoImage: props.imageLarge },
+              }}
+            >
+              <img
+                src={props.image}
+                width="170px"
+                height="100px"
+                alt="huyhero"
+              ></img>
+            </Link>
+          </div>
+
+          <div className="videodetails__content--result">
+            <p
+              className="videotitle"
+              style={{ fontSize: "17px", fontWeight: "bold" }}
+            >
+              {props.title}
+            </p>
+            <p style={{ color: "rgb(0, 0, 0, 0.6)" }}>{props.channelTitle}</p>
+            {`${ViewNumberFormatter(props.viewCount)}・${TimePublishToNow(
+              props.publishedAt
+            )}`}
           </div>
         </div>
       ) : (
@@ -92,7 +127,7 @@ function VideoDetails(props) {
                 data: { videoImage: props.imageLarge },
               }}
             >
-              <img src={props.image} alt="huyhero"></img>
+              <img src={props.image} width="360px" alt="huyhero"></img>
             </Link>
           </div>
 
@@ -101,8 +136,15 @@ function VideoDetails(props) {
               <Avatar alt="Remy Sharp" src={props.channelImage} />
             </div>
             <div className="videodetails__content--info">
-              <h3>{props.title}</h3>
-              <h4>{props.channelTitle}</h4>
+              <p
+                style={{
+                  fontSize: "20px",
+                }}
+                className="videotitle"
+              >
+                {props.title}
+              </p>
+              <p style={{ color: "rgb(0, 0, 0, 0.6)" }}>{props.channelTitle}</p>
               {`${ViewNumberFormatter(props.viewCount)}・${TimePublishToNow(
                 props.publishedAt
               )}`}

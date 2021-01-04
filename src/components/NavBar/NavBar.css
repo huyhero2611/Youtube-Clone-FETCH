@@ -9,8 +9,9 @@
 
 /* PC */
 .navbar {
+  position: fixed;
   background-color: white;
-  max-width: 240px;
+  width: 220px;
   height: 100vh;
 }
 
@@ -22,14 +23,10 @@
   align-items: center;
 }
 
-.navbar__item p {
-  margin: 0;
-}
-
 /* Tablet */
-@media (min-width: 740px) and (max-width: 1023px) {
+@media (min-width: 740px) and (max-width: 1280px) {
   .navbar {
-    max-width: 70px;
+    width: 70px;
   }
 
   .navbar__item {

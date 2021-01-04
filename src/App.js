@@ -2,21 +2,10 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import routes from "./router";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { Grid, Paper } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Header from "./components/Header/Header";
 import NavBar from "./components/NavBar/NavBar";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  },
-}));
 
 function App(props) {
   const [showNavbar, setShowNavbar] = useState(true);
@@ -36,9 +25,8 @@ function App(props) {
       console.log("No component");
     }
   };
-  const classes = useStyles();
   return (
-    <div className={classes.root}>
+    <div>
       <Router>
         <Grid container spacing={0}>
           <Grid item xs={12} className="lg-12 md-12 sm-12 app__header">

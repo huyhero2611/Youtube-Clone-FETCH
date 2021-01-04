@@ -1,14 +1,26 @@
 /* PC */
 .videodetails {
   flex-basis: 23%;
-  margin-top: 30px;
-  max-width: 320px;
+  margin-top: 15px;
+  max-width: 360px;
 }
 
 .videodetails--result {
   display: inline-flex;
 }
 
+.videodetails--watch {
+  display: inline-flex;
+  margin-bottom: 10px;
+}
+
+.videotitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
 .videodetails__content {
   display: flex;
 }
@@ -16,9 +28,6 @@
 .videodetails__content--result {
   display: block;
   margin-left: 10px;
-}
-.videodetails__content--result p {
-  margin: 0;
 }
 .videodetais__content--result--title {
   padding: 0 10px;
@@ -33,18 +42,20 @@
   align-items: center;
 }
 
-.videodetails__content--info h3,
-h4 {
-  margin: 0;
+.videodetails__content--info {
+  margin-left: 20px;
 }
 
-.videodetails__content--info h3 {
-  overflow: hidden;
-}
-
+/* image */
 .videodetails__img {
-  width: 320px;
+  width: 360px;
   height: 200px;
+  margin-bottom: 15px;
+}
+
+.videodetals__img--watch {
+  width: 170px;
+  height: 100px;
 }
 
 /* Tablet */
@@ -57,7 +68,7 @@ h4 {
     margin-right: 75px;
   }
   .videodetails__img {
-    /* width: 480px;
-    height: 275px; */
+    /* width: 400px;
+    height: 260px; */
   }
 }

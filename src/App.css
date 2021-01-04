@@ -8,6 +8,10 @@ html {
   min-width: 500px;
 }
 
+p {
+  margin: 0;
+}
+
 .app__header {
   position: sticky;
   top: 0;
