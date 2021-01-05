@@ -3,10 +3,10 @@ import VideoDetails from "../VideoDetails/VideoDetails";
 import "./VideoList.css";
 import {
   getMostPopularVideos,
-  SearchRequest,
-  GetChannel,
+  searchRequest,
+  getChannel,
   getVideoDetails,
-  GetRelatedToVideo,
+  getRelatedToVideo,
 } from "../../api/baseApi";
 
 function VideoList(props) {
@@ -16,14 +16,14 @@ function VideoList(props) {
   useEffect(() => {
     let mounted = true;
     if (window.location.pathname.includes("result")) {
-      SearchRequest(props.inputSearch).then(async (res) => {
+      searchRequest(props.inputSearch).then(async (res) => {
         new Promise(async (resolutionFunc, rejectionFunc) => {
           for (let data of res) {
             const channelId = data.snippet.channelId;
             const videoId = data.id.videoId;
             const video = await getVideoDetails(videoId);
             data.viewCount = video[0].statistics.viewCount;
-            const channel = await GetChannel(channelId);
+            const channel = await getChannel(channelId);
             data.channelImage =
               channel.data.items[0].snippet.thumbnails.default.url;
             data.id = data.id.videoId;
@@ -37,9 +37,9 @@ function VideoList(props) {
         });
       });
     } else if (window.location.pathname.includes("watch")) {
-      console.log("get", GetRelatedToVideo(props.videoId));
-      GetRelatedToVideo(props.videoId).then((res) => {
-        console.log("res", res);
+      // console.log("get", getRelatedToVideo(props.videoId));
+      getRelatedToVideo(props.videoId).then((res) => {
+        // console.log("res", res);
         new Promise(async (resolutionFunc, rejectionFunc) => {
           let array = [];
           for (let i = 0; i < res.length; i++) {
@@ -51,7 +51,7 @@ function VideoList(props) {
               const videoId = res[i].id.videoId;
               const video = await getVideoDetails(videoId);
               res[i].viewCount = video[0].statistics.viewCount;
-              const channel = await GetChannel(channelId);
+              const channel = await getChannel(channelId);
               res[i].channelImage =
                 channel.data.items[0].snippet.thumbnails.default.url;
               res[i].id = res[i].id.videoId;
@@ -62,7 +62,7 @@ function VideoList(props) {
           if (mounted) {
             setLoading(false);
           }
-          console.log("data", data);
+          // console.log("data", data);
           setData(data);
         });
       });
@@ -74,7 +74,7 @@ function VideoList(props) {
             const videoId = data.id;
             const video = await getVideoDetails(videoId);
             data.viewCount = video[0].statistics.viewCount;
-            const channel = await GetChannel(channelId);
+            const channel = await getChannel(channelId);
             data.channelImage =
               channel.data.items[0].snippet.thumbnails.default.url;
           }

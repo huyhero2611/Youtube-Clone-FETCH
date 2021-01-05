@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { SearchRequest, getVideoDetails } from "../../api/baseApi";
+import { searchRequest, getVideoDetails } from "../../api/baseApi";
 import { Grid } from "@material-ui/core";
 import Navbar from "../../components/NavBar/NavBar";
-import VideoListPopular from "../../components/VideoList/VideoListPopular";
+import VideoList from "../../components/VideoList/VideoList";
 import "./Result.css";
-import VideoListResult from "../../components/VideoList/VideoListResult";
 
 function Result(props) {
   const inputSearch = props.match.params.inputSearch;
@@ -21,7 +20,7 @@ function Result(props) {
           xs={8}
           justify="center"
         >
-          <VideoListPopular inputSearch={inputSearch} />
+          <VideoList inputSearch={inputSearch} />
         </Grid>
       </Grid>
     </div>

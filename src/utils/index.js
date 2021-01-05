@@ -1,12 +1,29 @@
 export const ViewNumberFormatter = (num) => {
   let FormatNum = 0;
-
   if (num >= 1000 && num < 1000000) {
     FormatNum = Math.round((num / 1000) * 10) / 10 + " N lượt xem";
   } else if (num >= 1000000 && num < 1000000000) {
     FormatNum = Math.round((num / 1000000) * 10) / 10 + " Tr lượt xem";
   } else if (num >= 1000000000) {
     FormatNum = Math.round((num / 1000000000) * 10) / 10 + " T lượt xem";
+  } else {
+    FormatNum = num;
+  }
+  return FormatNum;
+};
+
+export const ViewNumberFormatterDetails = (num) => {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+};
+
+export const SubscriberNumberFormatter = (num) => {
+  let FormatNum = 0;
+  if (num >= 1000 && num < 1000000) {
+    FormatNum = Math.round((num / 1000) * 10) / 10 + " N người đăng ký";
+  } else if (num >= 1000000 && num < 1000000000) {
+    FormatNum = Math.round((num / 1000000) * 10) / 10 + " Tr người đăng ký";
+  } else if (num >= 1000000000) {
+    FormatNum = Math.round((num / 1000000000) * 10) / 10 + " T người đăng ký";
   } else {
     FormatNum = num;
   }
@@ -28,4 +45,10 @@ export const TimePublishToNow = (timePublish) => {
     FormatTime = Math.floor(timeDifferent / 364) + " năm trước";
   }
   return FormatTime;
+};
+
+export const TimeFormatter = (time) => {
+  const temp = new Date(time);
+  // return temp;
+  return `${temp.getDate()} thg ${temp.getMonth() + 1}, ${temp.getFullYear()}`;
 };

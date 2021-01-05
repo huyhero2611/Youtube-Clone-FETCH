@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import VideoListPopular from "../../components/VideoList/VideoListPopular";
+import VideoList from "../../components/VideoList/VideoList";
 import { Grid } from "@material-ui/core";
 import NavBar from "../../components/NavBar/NavBar";
 import "./Home.css";
@@ -18,7 +18,7 @@ function Home() {
           xs={10}
           justify="space-around"
         >
-          <VideoListPopular />
+          <VideoList />
         </Grid>
       </Grid>
     </div>

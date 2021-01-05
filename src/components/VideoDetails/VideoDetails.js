@@ -11,7 +11,7 @@ import { makeStyles, rgbToHex } from "@material-ui/core/styles";
 import { TimePublishToNow, ViewNumberFormatter } from "../../utils";
 import "./VideoDetails.css";
 import { Link } from "react-router-dom";
-// import { getVideoDetails, GetChannel } from "../../api/baseApi";
+// import { getVideoDetails, getChannel } from "../../api/baseApi";
 
 const useStyles = makeStyles((theme) => ({
   root: {

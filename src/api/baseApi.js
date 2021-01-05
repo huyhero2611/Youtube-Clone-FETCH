@@ -42,7 +42,7 @@ export const getVideoDetails = (videoId) => {
 };
 
 // SEARCH
-export const SearchRequest = (inputSearch) => {
+export const searchRequest = (inputSearch) => {
   const result = YouTubeAPI.get("search", {
     params:
       // parameter && option
@@ -70,7 +70,7 @@ export const SearchRequest = (inputSearch) => {
 };
 
 // GET CHANNEL
-export const GetChannel = (channelId) => {
+export const getChannel = (channelId) => {
   const result = YouTubeAPI.get("channels", {
     params: {
       part: "snippet, statistics",
@@ -82,7 +82,7 @@ export const GetChannel = (channelId) => {
 };
 
 //RELATED TO VIDEO WATCHING
-export const GetRelatedToVideo = (videoId) => {
+export const getRelatedToVideo = (videoId) => {
   const result = YouTubeAPI.get("search", {
     params: {
       part: "snippet",

@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import routes from "./router";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+  HashRouter,
+  BrowserRouter as Router,
+  Route,
+  Switch,
+} from "react-router-dom";
 import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Header from "./components/Header/Header";
@@ -27,6 +32,7 @@ function App(props) {
   };
   return (
     <div>
+      {/* <HashRouter> */}
       <Router>
         <Grid container spacing={0}>
           <Grid item xs={12} className="lg-12 md-12 sm-12 app__header">
@@ -37,6 +43,7 @@ function App(props) {
           </Grid>
         </Grid>
       </Router>
+      {/* </HashRouter> */}
     </div>
   );
 }
