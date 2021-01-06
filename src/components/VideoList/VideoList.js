@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import VideoDetails from "../VideoDetails/VideoDetails";
 import "./VideoList.css";
+import Loading from "../../assets/loading3.gif";
+import LoadingWatch from "../../assets/test-loading.png";
 import {
   getMostPopularVideos,
   searchRequest,
@@ -111,7 +113,31 @@ function VideoList(props) {
   return (
     <div>
       {loading ? (
-        <p>Loading...</p>
+        <>
+          {window.location.pathname.includes("watch") ? (
+            <img
+              style={{
+                position: "relative",
+                top: "100%",
+              }}
+              src={LoadingWatch}
+            />
+          ) : window.location.pathname.includes("result") ? (
+            <img
+              style={{
+                position: "relative",
+                left: "50%",
+                width: "300px",
+              }}
+              src={Loading}
+            />
+          ) : (
+            <img
+              style={{ position: "relative", top: "80%", width: "300px" }}
+              src={Loading}
+            />
+          )}
+        </>
       ) : (
         <div
           className={

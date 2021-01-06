@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const APP_KEY = "AIzaSyAe5StmTvlOGpufcLsRMcAM0sC2RexewgA";
+const APP_KEY = "AIzaSyAVACMSBQlsiECbg0LGwmh3XXsZLK7I7SY";
 /*
 APP KEY
 huyhero2611     AIzaSyBvW9hL8LcRCGyTYUuLykpdjp064Vou0OY
@@ -89,6 +89,19 @@ export const getRelatedToVideo = (videoId) => {
       maxResults: 20,
       relatedToVideoId: videoId,
       type: "video",
+      key: APP_KEY,
+    },
+  }).then((data) => data.data.items);
+  return result;
+};
+
+//EXPORT LIST COMMENTS OF VIDEO BY VIDEOID
+export const getListComments = (videoId) => {
+  const result = YouTubeAPI.get("commentThreads", {
+    params: {
+      part: "snippet",
+      videoId: videoId,
+      maxResults: 50,
       key: APP_KEY,
     },
   }).then((data) => data.data.items);

@@ -3,6 +3,10 @@
   padding: 30px;
 }
 
+.watch__video .watch__comment {
+  padding-left: 70px;
+}
+
 .watch__video--info {
   margin-top: 15px;
   padding-left: 70px;
@@ -18,4 +22,38 @@
 
 .channel--overview {
   padding-left: 20px;
+}
+
+.description--text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 5; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+
+.description--btn {
+  border: 0px;
+  color: rgb(0, 0, 0, 0.6);
+  background-color: rgb(259, 259, 259);
+  margin-top: 8px;
+  font-size: 1em;
+  font-weight: 500;
+}
+
+.totalcomment {
+  font-size: 20px;
+  margin: 15px 0;
+}
+
+.hr__watch {
+  width: 97.3%;
+  border: 0.2px solid rbg(0, 0, 0, 0.3);
+  margin: 15px 0;
+}
+
+.comment--like {
+  padding-top: 10px;
+  display: flex;
+  align-items: center;
 }
