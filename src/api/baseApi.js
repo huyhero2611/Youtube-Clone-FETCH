@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const APP_KEY = "AIzaSyAVACMSBQlsiECbg0LGwmh3XXsZLK7I7SY";
+const APP_KEY = "AIzaSyAe5StmTvlOGpufcLsRMcAM0sC2RexewgA";
 /*
 APP KEY
 huyhero2611     AIzaSyBvW9hL8LcRCGyTYUuLykpdjp064Vou0OY
@@ -33,7 +33,7 @@ export const getMostPopularVideos = () => {
 export const getVideoDetails = (videoId) => {
   const result = YouTubeAPI.get("videos", {
     params: {
-      part: "snippet, statistics",
+      part: "snippet, statistics, liveStreamingDetails",
       id: videoId,
       key: APP_KEY,
     },
@@ -102,6 +102,17 @@ export const getListComments = (videoId) => {
       part: "snippet",
       videoId: videoId,
       maxResults: 50,
+      key: APP_KEY,
+    },
+  }).then((data) => data.data.items);
+  return result;
+};
+
+export const getChatLive = (chatId) => {
+  const result = YouTubeAPI.get("liveChat/messages", {
+    params: {
+      part: "snippet, authorDetails",
+      liveChatId: chatId,
       key: APP_KEY,
     },
   }).then((data) => data.data.items);

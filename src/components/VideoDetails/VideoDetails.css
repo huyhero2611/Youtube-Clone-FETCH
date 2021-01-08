@@ -27,14 +27,18 @@
 
 .videodetails__content--result {
   display: block;
-  margin-left: 10px;
+  margin-left: 20px;
 }
-.videodetais__content--result--title {
+
+.videodetails__content--result > p {
+  font-size: 12px;
+}
+/* .videodetais__content--result--title {
   padding: 0 10px;
-}
+} */
 .videodetais__content--result--channel,
 .videodetails__content--result--description {
-  padding: 5px 10px;
+  padding: 5px 0;
 }
 
 .videodetais__content--result--channel {
@@ -44,6 +48,14 @@
 
 .videodetails__content--info {
   margin-left: 20px;
+}
+
+.videodetails__content--live {
+  color: red;
+  border: 1px solid red;
+  width: fit-content;
+  padding: 3px;
+  border-radius: 6%;
 }
 
 /* image */

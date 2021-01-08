@@ -7,43 +7,17 @@ import {
   Avatar,
   IconButton,
 } from "@material-ui/core";
-import { makeStyles, rgbToHex } from "@material-ui/core/styles";
 import { TimePublishToNow, ViewNumberFormatter } from "../../utils";
 import "./VideoDetails.css";
 import { Link } from "react-router-dom";
 // import { getVideoDetails, getChannel } from "../../api/baseApi";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    maxWidth: 345,
-    minHeight: 300,
-  },
-  media: {
-    height: 0,
-    paddingTop: "56.25%", // 16:9
-  },
-  expand: {
-    transform: "rotate(0deg)",
-    marginLeft: "auto",
-    transition: theme.transitions.create("transform", {
-      duration: theme.transitions.duration.shortest,
-    }),
-  },
-  expandOpen: {
-    transform: "rotate(180deg)",
-  },
-  avatar: {
-    backgroundColor: "red",
-  },
-}));
-
 function VideoDetails(props) {
   // const videoSrc = `https://www.youtube.com/embed/${props.videoId}`;
   // console.log(videoSrc);
-  const classes = useStyles();
   const [page, setPage] = useState("");
 
-  useEffect(async () => {
+  useEffect(() => {
     if (window.location.pathname.includes("result")) {
       setPage("result");
     } else if (window.location.pathname.includes("watch")) {
@@ -69,9 +43,11 @@ function VideoDetails(props) {
           <div className="videodetails__content--result">
             <div className="videodetais__content--result--title">
               <p style={{ fontSize: "20px" }}>{props.title}</p>
-              {`${ViewNumberFormatter(props.viewCount)}・${TimePublishToNow(
-                props.publishedAt
-              )}`}
+              {props.liveBroadcastContent == "none"
+                ? `${ViewNumberFormatter(
+                    props.viewCount
+                  )} lượt xem・${TimePublishToNow(props.publishedAt)}`
+                : `${ViewNumberFormatter(props.viewLiveCount)} người đang xem`}
             </div>
             <div
               style={{ display: "flex" }}
@@ -80,10 +56,11 @@ function VideoDetails(props) {
               <Avatar alt="Remy Sharp" src={props.channelImage} />
               <p style={{ color: "rgb(0, 0, 0, 0.6)" }}>{props.channelTitle}</p>
             </div>
-            {page === "result" ? (
-              <div className="videodetails__content--result--description">
-                <p>{props.description}</p>
-              </div>
+            <div className="videodetails__content--result--description">
+              <p>{props.description}</p>
+            </div>
+            {props.liveBroadcastContent == "live" ? (
+              <p className="videodetails__content--live">Trực tiếp</p>
             ) : null}
           </div>
         </div>
@@ -98,8 +75,8 @@ function VideoDetails(props) {
             >
               <img
                 src={props.image}
-                width="170px"
-                height="100px"
+                width="190px"
+                height="110px"
                 alt="huyhero"
               ></img>
             </Link>
@@ -108,14 +85,25 @@ function VideoDetails(props) {
           <div className="videodetails__content--result">
             <p
               className="videotitle"
-              style={{ fontSize: "17px", fontWeight: "bold" }}
+              style={{ fontSize: "16px", fontWeight: "bold" }}
             >
               {props.title}
             </p>
-            <p style={{ color: "rgb(0, 0, 0, 0.6)" }}>{props.channelTitle}</p>
-            {`${ViewNumberFormatter(props.viewCount)}・${TimePublishToNow(
-              props.publishedAt
-            )}`}
+            <p style={{ fontSize: "15px", color: "rgb(0, 0, 0, 0.6)" }}>
+              {props.channelTitle}
+            </p>
+            <p style={{ fontSize: "15px" }}>{`${ViewNumberFormatter(
+              props.viewCount
+            )} lượt xem・${TimePublishToNow(props.publishedAt)}`}</p>
+
+            {props.liveBroadcastContent == "live" ? (
+              <p
+                style={{ fontSize: "11px" }}
+                className="videodetails__content--live"
+              >
+                Trực tiếp
+              </p>
+            ) : null}
           </div>
         </div>
       ) : (
@@ -145,9 +133,9 @@ function VideoDetails(props) {
                 {props.title}
               </p>
               <p style={{ color: "rgb(0, 0, 0, 0.6)" }}>{props.channelTitle}</p>
-              {`${ViewNumberFormatter(props.viewCount)}・${TimePublishToNow(
-                props.publishedAt
-              )}`}
+              {`${ViewNumberFormatter(
+                props.viewCount
+              )} lượt xem・${TimePublishToNow(props.publishedAt)}`}
             </div>
           </div>
         </div>

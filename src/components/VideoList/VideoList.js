@@ -24,12 +24,21 @@ function VideoList(props) {
             const channelId = data.snippet.channelId;
             const videoId = data.id.videoId;
             const video = await getVideoDetails(videoId);
+            // console.log("video", video);
+            if (video[0].liveStreamingDetails !== undefined) {
+              data.viewLiveCount =
+                video[0].liveStreamingDetails.concurrentViewers;
+              // console.log("ok");
+            } else {
+              data.viewLiveCount = -1;
+            }
             data.viewCount = video[0].statistics.viewCount;
             const channel = await getChannel(channelId);
             data.channelImage =
               channel.data.items[0].snippet.thumbnails.default.url;
             data.id = data.id.videoId;
           }
+          console.log("show", res);
           resolutionFunc(res);
         }).then((data) => {
           if (mounted) {
@@ -39,9 +48,7 @@ function VideoList(props) {
         });
       });
     } else if (window.location.pathname.includes("watch")) {
-      // console.log("get", getRelatedToVideo(props.videoId));
       getRelatedToVideo(props.videoId).then((res) => {
-        // console.log("res", res);
         new Promise(async (resolutionFunc, rejectionFunc) => {
           let array = [];
           for (let i = 0; i < res.length; i++) {
@@ -64,7 +71,6 @@ function VideoList(props) {
           if (mounted) {
             setLoading(false);
           }
-          // console.log("data", data);
           setData(data);
         });
       });
@@ -106,6 +112,8 @@ function VideoList(props) {
         channelTitle={res.snippet.channelTitle}
         videoId={res.id}
         channelImage={res.channelImage}
+        liveBroadcastContent={res.snippet.liveBroadcastContent}
+        viewLiveCount={res.viewLiveCount}
       />
     );
   });

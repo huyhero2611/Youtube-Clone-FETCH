@@ -1,11 +1,11 @@
 export const ViewNumberFormatter = (num) => {
   let FormatNum = 0;
   if (num >= 1000 && num < 1000000) {
-    FormatNum = Math.round((num / 1000) * 10) / 10 + " N lượt xem";
+    FormatNum = Math.round((num / 1000) * 10) / 10 + " N";
   } else if (num >= 1000000 && num < 1000000000) {
-    FormatNum = Math.round((num / 1000000) * 10) / 10 + " Tr lượt xem";
+    FormatNum = Math.round((num / 1000000) * 10) / 10 + " Tr";
   } else if (num >= 1000000000) {
-    FormatNum = Math.round((num / 1000000000) * 10) / 10 + " T lượt xem";
+    FormatNum = Math.round((num / 1000000000) * 10) / 10 + " T";
   } else {
     FormatNum = num;
   }
@@ -14,20 +14,6 @@ export const ViewNumberFormatter = (num) => {
 
 export const ViewNumberFormatterDetails = (num) => {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-};
-
-export const SubscriberNumberFormatter = (num) => {
-  let FormatNum = 0;
-  if (num >= 1000 && num < 1000000) {
-    FormatNum = Math.round((num / 1000) * 10) / 10 + " N người đăng ký";
-  } else if (num >= 1000000 && num < 1000000000) {
-    FormatNum = Math.round((num / 1000000) * 10) / 10 + " Tr người đăng ký";
-  } else if (num >= 1000000000) {
-    FormatNum = Math.round((num / 1000000000) * 10) / 10 + " T người đăng ký";
-  } else {
-    FormatNum = num;
-  }
-  return FormatNum;
 };
 
 export const TimePublishToNow = (timePublish) => {
