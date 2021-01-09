@@ -13,7 +13,7 @@ export const ViewNumberFormatter = (num) => {
 };
 
 export const ViewNumberFormatterDetails = (num) => {
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return num?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 };
 
 export const TimePublishToNow = (timePublish) => {

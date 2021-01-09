@@ -8,26 +8,36 @@
 //   const [listChat, setListChat] = useState([]);
 
 //   useEffect(async () => {
+//     // if (props.chatId != "") {
+//     // const interval = setInterval(() => {
+//     //   getChatLive(props.chatId).then((res) => setListChat(res));
+//     console.log("chatId", props.chatId);
+//     // }, 1000);
 //     await getChatLive(props.chatId).then((res) => setListChat(res));
-//     console.log("chatlive", getChatLive(props.chatId));
-//     // console.log("ok");
 //     // console.log("chatId", props.chatId);
-//     // const test = await axios.get(
-//     //   `https://youtube.googleapis.com/youtube/v3/liveChat/messages?liveChatId=${props.chatId}&part=snippet%2C%20authorDetails&key=AIzaSyBvW9hL8LcRCGyTYUuLykpdjp064Vou0OY`
-//     // );
-//     // console.log(test);
-//   }, []);
+//     // return () => clearInterval(interval);
+//     // }
+//   }, [window.location.pathname]);
 
 //   return (
 //     <div className="chatlive">
 //       {listChat.map((item) => {
 //         return (
-//           <div className="chatlive__item">
-//             <Avatar alt="Remy Sharp" src={item.authorDetails.profileImageUrl} />
-//             <p style={{ color: "rgb(0,0,0,0.66)" }}>
-//               {item.authorDetails.displayName}
-//             </p>
-//             <p>{item.snippet.displayMessage}</p>
+//           <div className="chatlive__items">
+//             <div className="chatlive__item">
+//               <Avatar
+//                 alt="Remy Sharp"
+//                 src={item.authorDetails.profileImageUrl}
+//               />
+//               <p>
+//                 <span
+//                   style={{ color: "rgb(0,0,0,0.66)", paddingRight: "10px" }}
+//                 >
+//                   {item.authorDetails.displayName}
+//                 </span>
+//                 <span>{item.snippet.displayMessage}</span>
+//               </p>
+//             </div>
 //           </div>
 //         );
 //       })}

@@ -23,24 +23,30 @@ function Watch(props) {
   const [data, setData] = useState([]);
   const [dataCmt, setDataCmt] = useState([]);
   const [showMoreDes, setShowMoreDes] = useState(false);
-  const [chatId, setChatId] = useState("");
+  const [listChatLive, setListChatLive] = useState([]);
   const [live, setLive] = useState(false);
-  // const [pathname, setPathname] = useState("");
-
-  useEffect(() => {
+  const [runInterval, setRunInterval] = useState(null);
+  useEffect(async () => {
     let mounted = true;
-    getVideoDetails(videoId).then(async (res) => {
-      // console.log(res.liveStreamingDetails);
-      // console.log("watch", res);
+    await getVideoDetails(videoId).then(async (res) => {
       new Promise(async (resolutionFunc, rejectionFunc) => {
         for (let data of res) {
-          if (data.liveStreamingDetails !== undefined) {
+          if (
+            data.liveStreamingDetails !== undefined &&
+            data.liveStreamingDetails.concurrentViewers !== undefined
+          ) {
             setLive(true);
-            setChatId(data.liveStreamingDetails.activeLiveChatId);
-            // console.log("chatId1", data.liveStreamingDetails.activeLiveChatId);
+            setRunInterval(
+              setInterval(async () => {
+                const chatlive = await getChatLive(
+                  data.liveStreamingDetails.activeLiveChatId
+                );
+                setListChatLive(chatlive);
+              }, 1000)
+            );
           } else {
+            runInterval && clearInterval(runInterval);
             setLive(false);
-            console.log("false");
           }
           const channel = await getChannel(data.snippet.channelId);
           data.channel = channel.data.items[0];
@@ -53,26 +59,17 @@ function Watch(props) {
         setData(data);
       });
     });
-    getListComments(videoId).then((res) => {
+    await getListComments(videoId).then((res) => {
       if (mounted) {
         setLoading(false);
       }
       setDataCmt(res);
-      // setPathname(window.location.pathname);
     });
     return function cleanup() {
       mounted = false;
     };
   }, [window.location.pathname]);
 
-  // useEffect(async () => {
-  //   // console.log("chatId2", chatId);
-  //   if (live) {
-  //     await getChatLive(chatId).then((res) => {
-  //       console.log("res", res);
-  //     });
-  //   }
-  // }, [window.location.pathname]);
   return (
     <div>
       {loading ? (
@@ -91,15 +88,11 @@ function Watch(props) {
                   url={`https://www.youtube.com/watch?v=${videoId}`}
                 ></VideoPlayer>
               </div>
-              {data.map((item) => {
+              {data.map((item, index) => {
                 const tags = item.snippet.tags;
-                let countViewers = 0;
-                if (item.liveStreamingDetails != undefined) {
-                  countViewers = item.liveStreamingDetails.concurrentViewers;
-                }
                 return (
-                  <div className="watch__video--info">
-                    {tags != undefined ? (
+                  <div className="watch__video--info" key={index}>
+                    {tags != undefined && tags.length >= 5 ? (
                       <div className="info__hashtags">
                         {`#${item.snippet.tags[0].split(" ").join("")}   
                     #${item.snippet.tags[1].split(" ").join("")}
@@ -117,7 +110,9 @@ function Watch(props) {
                       {live ? (
                         <p>
                           {`
-                          ${ViewNumberFormatterDetails(countViewers)}
+                          ${ViewNumberFormatterDetails(
+                            item.liveStreamingDetails?.concurrentViewers
+                          )}
                           người đang xem・Đã được phát trực tiếp từ ${TimeFormatter(
                             item.snippet.publishedAt
                           )}
@@ -180,7 +175,7 @@ function Watch(props) {
                     {live ? null : (
                       <div className="totalcomment">
                         {`${ViewNumberFormatterDetails(
-                          item.statistics.commentCount
+                          item.statistics?.commentCount
                         )} bình luận`}
                       </div>
                     )}
@@ -188,51 +183,55 @@ function Watch(props) {
                 );
               })}
             </div>
-            <div className="watch__comment">
-              {dataCmt.map((item) => {
-                const temp = item.snippet.topLevelComment.snippet;
-                return (
-                  <div style={{ display: "flex" }}>
-                    <Avatar alt="Remy Sharp" src={temp.authorProfileImageUrl} />
-                    <div
-                      style={{ paddingLeft: "20px", paddingBottom: "10px" }}
-                      // className="comment__text"
-                    >
-                      <p
-                        style={{
-                          fontSize: "115%",
-                          fontWeight: "500",
-                          display: "inline",
-                        }}
+            {live ? null : (
+              <div className="watch__comment">
+                {dataCmt.map((item) => {
+                  const temp = item.snippet.topLevelComment.snippet;
+                  return (
+                    <div style={{ display: "flex" }}>
+                      <Avatar
+                        alt="Remy Sharp"
+                        src={temp.authorProfileImageUrl}
+                      />
+                      <div
+                        style={{ paddingLeft: "20px", paddingBottom: "10px" }}
                       >
-                        {temp.authorDisplayName}
-                      </p>
-                      <span
-                        style={{
-                          paddingLeft: "0.5em",
-                          color: "rgb(0,0,0,0.66)",
-                        }}
-                      >
-                        {TimePublishToNow(temp.updatedAt)}
-                      </span>
-                      {/* {temp.authorChannelUrl} */}
-                      <p>{temp.textOriginal}</p>
-                      <div className="comment--like">
-                        <ThumbUp
-                          // onClick={() => (temp.likeCount = temp.likeCount + 1)}
-                          style={{ color: "rgb(0,0,0,0.66)" }}
-                        />
-                        {temp.likeCount > 0 ? (
-                          <span style={{ paddingLeft: "5px" }}>
-                            {temp.likeCount}
-                          </span>
-                        ) : null}
+                        <p
+                          style={{
+                            fontSize: "115%",
+                            fontWeight: "500",
+                            display: "inline",
+                          }}
+                        >
+                          {temp.authorDisplayName}
+                        </p>
+                        <span
+                          style={{
+                            paddingLeft: "0.5em",
+                            color: "rgb(0,0,0,0.66)",
+                          }}
+                        >
+                          {TimePublishToNow(temp.updatedAt)}
+                        </span>
+                        {/* {temp.authorChannelUrl} */}
+                        <p>{temp.textOriginal}</p>
+                        <div className="comment--like">
+                          <ThumbUp
+                            // onClick={() => (temp.likeCount = temp.likeCount + 1)}
+                            style={{ color: "rgb(0,0,0,0.66)" }}
+                          />
+                          {temp.likeCount > 0 ? (
+                            <span style={{ paddingLeft: "5px" }}>
+                              {temp.likeCount}
+                            </span>
+                          ) : null}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            )}
           </Grid>
           <Grid
             item
@@ -242,10 +241,30 @@ function Watch(props) {
           >
             {live ? (
               <div className="watch__chatlive">
-                <p>Top Chat</p>
-                {/* <div className="watch__chatlive--messages">
-                  <LiveChat chatId={chatId} />
-                </div> */}
+                <p className="watch__chatlive--header">Top Chat</p>
+                <div className="watch__chatlive--messages">
+                  {listChatLive.map((item) => {
+                    return (
+                      <div className="chatlive__item">
+                        <Avatar
+                          alt="Remy Sharp"
+                          src={item.authorDetails.profileImageUrl}
+                        />
+                        <p>
+                          <span
+                            style={{
+                              color: "rgb(0,0,0,0.66)",
+                              paddingRight: "10px",
+                            }}
+                          >
+                            {item.authorDetails.displayName}
+                          </span>
+                          <span>{item.snippet.displayMessage}</span>
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             ) : null}
             <div className="watch__videos--next">

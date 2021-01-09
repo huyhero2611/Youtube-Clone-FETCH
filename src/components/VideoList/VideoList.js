@@ -38,7 +38,7 @@ function VideoList(props) {
               channel.data.items[0].snippet.thumbnails.default.url;
             data.id = data.id.videoId;
           }
-          console.log("show", res);
+          // console.log("show", res);
           resolutionFunc(res);
         }).then((data) => {
           if (mounted) {
