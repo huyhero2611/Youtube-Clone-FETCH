@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import VideoDetails from "../VideoDetails/VideoDetails";
 import "./VideoList.css";
-import Loading from "../../assets/loading3.gif";
+import Loading from "../../assets/loading7.gif";
+import LoadingHome from "../../assets/loading-home.png";
 import LoadingWatch from "../../assets/test-loading.png";
 import {
   getMostPopularVideos,
@@ -134,15 +135,16 @@ function VideoList(props) {
             <img
               style={{
                 position: "relative",
-                left: "50%",
+                left: "550px",
+                top: "350px",
                 width: "300px",
               }}
               src={Loading}
             />
           ) : (
             <img
-              style={{ position: "relative", top: "80%", width: "300px" }}
-              src={Loading}
+              style={{ position: "relative", top: "3%", left: "-2%" }}
+              src={LoadingHome}
             />
           )}
         </>
