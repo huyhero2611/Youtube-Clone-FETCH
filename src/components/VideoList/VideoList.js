@@ -33,6 +33,7 @@ function VideoList(props) {
             } else {
               data.viewLiveCount = -1;
             }
+            data.duration = video[0].contentDetails.duration;
             data.viewCount = video[0].statistics.viewCount;
             const channel = await getChannel(channelId);
             data.channelImage =
@@ -60,6 +61,7 @@ function VideoList(props) {
               const channelId = res[i].snippet.channelId;
               const videoId = res[i].id.videoId;
               const video = await getVideoDetails(videoId);
+              res[i].duration = video[0].contentDetails.duration;
               res[i].viewCount = video[0].statistics.viewCount;
               const channel = await getChannel(channelId);
               res[i].channelImage =
@@ -79,6 +81,7 @@ function VideoList(props) {
       getMostPopularVideos().then(async (res) => {
         new Promise(async (resolutionFunc, rejectionFunc) => {
           for (let data of res) {
+            data.duration = data.contentDetails.duration;
             const channelId = data.snippet.channelId;
             const videoId = data.id;
             const video = await getVideoDetails(videoId);
@@ -104,10 +107,11 @@ function VideoList(props) {
   let listVideo = data.map((res) => {
     return (
       <VideoDetails
+        duration={res.duration}
         viewCount={res.viewCount}
         title={res.snippet.title}
         image={res.snippet.thumbnails.medium.url}
-        imageLarge={`https://i.ytimg.com/vi/${res.id}/maxresdefault.jpg`}
+        // imageLarge={`https://i.ytimg.com/vi/${res.id}/maxresdefault.jpg`}
         description={res.snippet.description}
         publishedAt={res.snippet.publishedAt}
         channelTitle={res.snippet.channelTitle}

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const APP_KEY = "AIzaSyBvW9hL8LcRCGyTYUuLykpdjp064Vou0OY";
+const APP_KEY = "AIzaSyB39Fa8R-tMxxsbfwHf0C7Hkc0xfyOwkiY";
 /*
 APP KEY
 huyhero2611     AIzaSyBvW9hL8LcRCGyTYUuLykpdjp064Vou0OY
@@ -19,7 +19,7 @@ export const YouTubeAPI = axios.create({
 export const getMostPopularVideos = () => {
   const result = YouTubeAPI.get("videos", {
     params: {
-      part: "snippet,statistics",
+      part: "snippet,statistics, contentDetails",
       maxResults: 24,
       chart: "mostPopular",
       key: APP_KEY,
@@ -33,7 +33,7 @@ export const getMostPopularVideos = () => {
 export const getVideoDetails = (videoId) => {
   const result = YouTubeAPI.get("videos", {
     params: {
-      part: "snippet, statistics, liveStreamingDetails",
+      part: "snippet, statistics, liveStreamingDetails, contentDetails",
       id: videoId,
       key: APP_KEY,
     },

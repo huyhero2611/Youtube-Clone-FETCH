@@ -86,6 +86,8 @@ function Watch(props) {
                   controls
                   playing="true"
                   url={`https://www.youtube.com/watch?v=${videoId}`}
+                  pip="true"
+                  stopOnUnmount="false"
                 ></VideoPlayer>
               </div>
               {data.map((item, index) => {

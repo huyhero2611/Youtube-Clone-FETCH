@@ -38,3 +38,18 @@ export const TimeFormatter = (time) => {
   // return temp;
   return `${temp.getDate()} thg ${temp.getMonth() + 1}, ${temp.getFullYear()}`;
 };
+
+export const DurationVideoFormatter = (duration) => {
+  let FormatTime = "";
+  for (var i = 0; i < duration.length; i++) {
+    if (duration[i] >= "0" && duration[i] <= "9") {
+      FormatTime += duration[i];
+    } else if (duration[i] == "H" || duration[i] == "M") {
+      FormatTime += ":";
+    }
+  }
+  if (FormatTime.charAt(FormatTime.length - 1) == ":") {
+    FormatTime += "00";
+  }
+  return FormatTime;
+};
