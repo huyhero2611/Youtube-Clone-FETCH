@@ -9,6 +9,7 @@ import {
   getChannel,
   getListComments,
   getChatLive,
+  getPlayplistItems,
 } from "../../api/baseApi";
 import {
   ViewNumberFormatterDetails,
@@ -16,7 +17,7 @@ import {
   ViewNumberFormatter,
   TimePublishToNow,
 } from "../../utils/index";
-import LiveChat from "./LiveChat";
+import * as queryString from "query-string";
 function Watch(props) {
   const videoId = props.match.params.videoId;
   const [loading, setLoading] = useState(true);
@@ -25,9 +26,20 @@ function Watch(props) {
   const [showMoreDes, setShowMoreDes] = useState(false);
   const [listChatLive, setListChatLive] = useState([]);
   const [live, setLive] = useState(false);
+  const [playlist, setPlaylist] = useState([]);
   const [runInterval, setRunInterval] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
+
   useEffect(async () => {
+    const playlistId = queryString.parse(props.location.search);
+    if (playlistId.playlist !== undefined) {
+      await getPlayplistItems(playlistId.playlist).then((res) => {
+        console.log("res", res);
+        setPlaylist(res);
+      });
+    } else {
+      console.log("0");
+    }
     let mounted = true;
     await getVideoDetails(videoId).then(async (res) => {
       new Promise(async (resolutionFunc, rejectionFunc) => {
@@ -50,7 +62,8 @@ function Watch(props) {
             setLive(false);
           }
           const channel = await getChannel(data.snippet.channelId);
-          data.channel = channel.data.items[0];
+          console.log("watch channel", channel);
+          data.channel = channel[0];
         }
         resolutionFunc(res);
       }).then((data) => {

@@ -23,7 +23,9 @@ const routes = [
   {
     path: `/channel/:channelId`,
     exact: true,
-    main: ({ match }) => <Channel match={match} />,
+    main: ({ match, location }) => (
+      <Channel match={match} location={location} />
+    ),
   },
 ];
 

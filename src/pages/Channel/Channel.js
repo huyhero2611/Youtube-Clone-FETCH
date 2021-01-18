@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link, useHistory } from "react-router-dom";
 import {
   Grid,
   AppBar,
@@ -12,7 +13,7 @@ import { PlaylistPlay, PlayArrow } from "@material-ui/icons";
 import NavBar from "../../components/NavBar/NavBar";
 import { makeStyles } from "@material-ui/core/styles";
 import PropTypes from "prop-types";
-import { getChannel, getPlaylists } from "../../api/baseApi";
+import { getChannel, getPlaylists, getPlayplistItems } from "../../api/baseApi";
 import { ViewNumberFormatter } from "../../utils/index";
 import "./Channel.css";
 
@@ -69,13 +70,15 @@ export default function Channel(props) {
   const [data, setData] = useState([]);
   const [dataPlaylist, setDataPlaylist] = useState([]);
 
+  const history = useHistory();
+
   useEffect(async () => {
     await getChannel(channelId).then((res) => {
       // console.log("res", res);
       setData(res);
     });
     await getPlaylists(channelId).then((res) => {
-      console.log("res", res);
+      // console.log("res", res);
       setDataPlaylist(res);
     });
   }, []);
@@ -144,12 +147,32 @@ export default function Channel(props) {
                     <TabPanel value={value} index={2}>
                       <div className="channel__playlists">
                         {dataPlaylist.map((itemPlaylist) => {
-                          // console.log("test", itemPlaylist.snippet.thumbnails);
+                          // console.log("res", itemPlaylist);
+                          const watchPlaylistItem = () => {
+                            const playlistItem = getPlayplistItems(
+                              itemPlaylist.id
+                            ).then((res) => {
+                              history.push({
+                                pathname: `/watch/${res[0].snippet.resourceId.videoId}`,
+                                search: `?playlist=${itemPlaylist.id}`,
+                              });
+                            });
+
+                            // <Link to={`/watch/afsfasfas`}></Link>;
+
+                            // console.log("test1", itemPlaylist.id);
+                            // console.log("test", playlistItem);
+                            // <Link to={{pathname: `/watch/`}}
+                          };
                           return (
+                            // <Link to={`/watch/dauhsds`}>
                             <div
                               style={{
                                 position: "relative",
                                 marginBottom: "10px",
+                              }}
+                              onClick={() => {
+                                watchPlaylistItem();
                               }}
                             >
                               <div className="playlist__item">
@@ -179,6 +202,7 @@ export default function Channel(props) {
                                 {itemPlaylist.snippet.title}
                               </p>
                             </div>
+                            // </Link>
                           );
                         })}
                       </div>

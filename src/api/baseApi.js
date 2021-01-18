@@ -144,12 +144,13 @@ export const getPlaylists = (channelId) => {
 };
 
 export const getPlayplistItems = (playlistId) => {
-  const result = YouTubeAPI.get("playlist", {
+  const result = YouTubeAPI.get("playlistItems", {
     params: {
       part: "snippet",
       maxResults: 50,
       playlistId: playlistId,
       key: APP_KEY,
     },
-  });
+  }).then((data) => data.data.items);
+  return result;
 };
