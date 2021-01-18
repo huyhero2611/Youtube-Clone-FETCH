@@ -2,6 +2,7 @@ import Home from "./pages/Home/Home";
 import Result from "./pages/Result/Result";
 import Watch from "./pages/Watch/Watch";
 import PlayVideo from "./components/PlayVideo/PlayVideo";
+import Channel from "./pages/Channel/Channel";
 
 const routes = [
   {
@@ -18,6 +19,11 @@ const routes = [
     path: `/watch/:videoId`,
     exact: true,
     main: ({ match, location }) => <Watch match={match} location={location} />,
+  },
+  {
+    path: `/channel/:channelId`,
+    exact: true,
+    main: ({ match }) => <Channel match={match} />,
   },
 ];
 

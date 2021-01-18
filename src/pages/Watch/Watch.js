@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Grid, Avatar, Badge } from "@material-ui/core";
+import { Grid, Avatar, Badge, isMuiElement } from "@material-ui/core";
 import { ThumbUp } from "@material-ui/icons";
 import VideoList from "../../components/VideoList/VideoList";
 import VideoPlayer from "react-player";
@@ -26,6 +26,7 @@ function Watch(props) {
   const [listChatLive, setListChatLive] = useState([]);
   const [live, setLive] = useState(false);
   const [runInterval, setRunInterval] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
   useEffect(async () => {
     let mounted = true;
     await getVideoDetails(videoId).then(async (res) => {
@@ -70,26 +71,38 @@ function Watch(props) {
     };
   }, [window.location.pathname]);
 
+  useEffect(() => {
+    window.addEventListener(
+      "resize",
+      () => {
+        setIsMobile(window.innerWidth < 1280);
+      },
+      false
+    );
+  }, [isMobile]);
+
   return (
     <div>
       {loading ? (
         <p>Loading...</p>
       ) : (
         <div className="watch">
-          <Grid item className="lg-9 md-9 sm-9 watch__video" xs={9}>
+          <Grid
+            item
+            className={isMobile ? "lg-12 md-12 sm-12" : "lg-9 md-9 sm-9"}
+            xs={isMobile ? 12 : 9}
+          >
             <div className="watch__video">
-              <div className="watch__video--video">
-                <VideoPlayer
-                  style={{ paddingLeft: "70px" }}
-                  width="1280px"
-                  height="720px"
-                  controls
-                  playing="true"
-                  url={`https://www.youtube.com/watch?v=${videoId}`}
-                  pip="true"
-                  stopOnUnmount="false"
-                ></VideoPlayer>
-              </div>
+              {/* <div className="watch__video--video"> */}
+              <VideoPlayer
+                className="watch__video--video"
+                controls
+                playing="true"
+                url={`https://www.youtube.com/watch?v=${videoId}`}
+                pip="true"
+                stopOnUnmount="false"
+              ></VideoPlayer>
+              {/* </div> */}
               {data.map((item, index) => {
                 const tags = item.snippet.tags;
                 return (
@@ -237,8 +250,8 @@ function Watch(props) {
           </Grid>
           <Grid
             item
-            className="lg-3 md-3 sm-3 watch__videos"
-            xs={3}
+            className={isMobile ? "lg-12 md-12 sm-12" : "lg-3 md-3 sm-3"}
+            xs={isMobile ? 12 : 3}
             justify="center"
           >
             {live ? (

@@ -3,13 +3,17 @@
   padding: 30px;
 }
 
-.watch__video .watch__comment {
+.watch__video .watch__comment .watch__video--video .watch__video--info {
   padding-left: 70px;
+}
+
+.watch__video--video {
+  width: 97% !important;
+  height: 720px !important;
 }
 
 .watch__video--info {
   margin-top: 15px;
-  padding-left: 70px;
 }
 
 .info__hashtags {
@@ -105,4 +109,30 @@
 
 .chatlive__item > p {
   padding-left: 10px;
+}
+
+@media (max-width: 1280px) {
+  .watch {
+    display: block;
+    /* padding: 0; */
+  }
+
+  .watch__video--video {
+    padding-left: 0;
+    width: 99% !important;
+    height: 550px !important;
+  }
+}
+
+@media (max-width: 739px) {
+  .watch {
+    display: block;
+    /* padding: 0; */
+  }
+
+  .watch__video--video {
+    padding-left: 0;
+    width: 99% !important;
+    height: 100%;
+  }
 }

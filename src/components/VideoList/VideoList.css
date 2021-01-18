@@ -16,3 +16,9 @@
   padding-left: 100px;
   margin-top: 30px;
 }
+
+@media (max-width: 739px) {
+  .videolist__result {
+    padding-left: 0;
+  }
+}

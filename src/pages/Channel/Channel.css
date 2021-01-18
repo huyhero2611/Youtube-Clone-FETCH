@@ -1,0 +1,71 @@
+.tabs__header {
+  background-color: red;
+}
+
+.channel__content {
+  margin-left: -34px !important;
+}
+.channel__intro {
+  display: flex;
+}
+
+.channel__intro--title {
+  display: block;
+}
+
+.introduction__des {
+  font-size: 20px;
+  font-weight: bold;
+  padding-bottom: 10px;
+}
+
+.channel__playlists {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.playlist__item {
+  position: relative;
+  opacity: 1;
+}
+
+.playlist__item:hover {
+  opacity: 0.3;
+  background-color: rgb(0, 0, 0, 0.77);
+}
+
+.playlist__img--overlay {
+  background-color: rgb(0, 0, 0, 0.77);
+  height: 180px;
+  width: 150px;
+  position: absolute;
+  right: 0;
+  bottom: 3%;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.playlist__item--hover {
+  background-color: rgb(0, 0, 0, 0.77);
+  transition: 0.5s ease;
+  opacity: 0;
+  position: absolute;
+  top: 36%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  width: 100%;
+  height: 180px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.playlist__item--hover:hover {
+  opacity: 1;
+  cursor: pointer;
+}

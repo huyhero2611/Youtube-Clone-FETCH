@@ -14,11 +14,10 @@ import {
 } from "../../utils";
 import "./VideoDetails.css";
 import { Link } from "react-router-dom";
-// import { getVideoDetails, getChannel } from "../../api/baseApi";
 
 function VideoDetails(props) {
   // const videoSrc = `https://www.youtube.com/embed/${props.videoId}`;
-  // console.log(videoSrc);
+  // console.log("viewlivecount", props.viewLiveCount);
   const [page, setPage] = useState("");
 
   useEffect(() => {
@@ -38,20 +37,30 @@ function VideoDetails(props) {
         <Link className="link" to={{ pathname: `/watch/${props.videoId}` }}>
           <div className="videodetails--result">
             <div className="videodetails__img">
-              <img src={props.image} alt="huyhero"></img>
+              <img
+                className="videodetails__img--img"
+                src={props.image}
+                alt="huyhero"
+              ></img>
               {DurationVideoFormatter(`${props.duration}`) != "0" ? (
                 <div className="duration duration--result">
                   <span style={{ padding: "5px" }}>
                     {DurationVideoFormatter(`${props.duration}`)}
                   </span>
                 </div>
-              ) : null}
+              ) : (
+                <p className="duration duration--result videodetails__content--live">
+                  Trực tiếp
+                </p>
+              )}
             </div>
 
             <div className="videodetails__content--result">
               <div className="videodetais__content--result--title">
-                <p style={{ fontSize: "20px" }}>{props.title}</p>
-                {props.liveBroadcastContent == "none"
+                <p className="videotitle" style={{ fontSize: "20px" }}>
+                  {props.title}
+                </p>
+                {props.liveBroadcastContent === "none"
                   ? `${ViewNumberFormatter(
                       props.viewCount
                     )} lượt xem・${TimePublishToNow(props.publishedAt)}`
@@ -59,7 +68,10 @@ function VideoDetails(props) {
                       props.viewLiveCount
                     )} người đang xem`}
               </div>
-              <Link className="link" to={{ pathname: `/channel/channelTitle` }}>
+              <Link
+                className="link"
+                to={{ pathname: `/channel/${props.channelId}` }}
+              >
                 <div
                   style={{ display: "flex" }}
                   className="videodetais__content--result--channel"
@@ -73,24 +85,35 @@ function VideoDetails(props) {
                 </div>
               </Link>
               <div className="videodetails__content--result--description">
-                <p>{props.description}</p>
+                <p className="videotitle result--description">
+                  {props.description}
+                </p>
               </div>
-              {props.liveBroadcastContent == "live" ? (
-                <p className="videodetails__content--live">Trực tiếp</p>
-              ) : null}
             </div>
           </div>
         </Link>
-      ) : page == "watch" ? (
+      ) : page === "watch" ? (
         <Link className="link" to={{ pathname: `/watch/${props.videoId}` }}>
           <div className="videodetails--watch">
             <div className="videodetails__img--watch">
               <img
+                className="videodetails__img--img"
                 src={props.image}
                 width="190px"
                 height="110px"
                 alt="huyhero"
               ></img>
+              {DurationVideoFormatter(`${props.duration}`) != "0" ? (
+                <div className="duration duration--watch">
+                  <span style={{ padding: "5px" }}>
+                    {DurationVideoFormatter(`${props.duration}`)}
+                  </span>
+                </div>
+              ) : (
+                <p className="duration duration--watch videodetails__content--live">
+                  Trực tiếp
+                </p>
+              )}
             </div>
 
             <div className="videodetails__content--result">
@@ -100,21 +123,18 @@ function VideoDetails(props) {
               >
                 {props.title}
               </p>
-              <p style={{ fontSize: "15px", color: "rgb(0, 0, 0, 0.6)" }}>
-                {props.channelTitle}
-              </p>
-              <p style={{ fontSize: "15px" }}>{`${ViewNumberFormatter(
-                props.viewCount
-              )} lượt xem・${TimePublishToNow(props.publishedAt)}`}</p>
-
-              {props.liveBroadcastContent == "live" ? (
-                <p
-                  style={{ fontSize: "11px" }}
-                  className="videodetails__content--live"
-                >
-                  Trực tiếp
+              <Link
+                className="link"
+                to={{ pathname: `/channel/${props.channelId}` }}
+              >
+                <p style={{ fontSize: "15px", color: "rgb(0, 0, 0, 0.6)" }}>
+                  {props.channelTitle}
                 </p>
-              ) : null}
+              </Link>
+
+              {`${ViewNumberFormatter(
+                props.viewCount
+              )} lượt xem・${TimePublishToNow(props.publishedAt)}`}
             </div>
           </div>
         </Link>
@@ -136,7 +156,7 @@ function VideoDetails(props) {
               <div className="videodetails__content--avatar">
                 <Link
                   className="link"
-                  to={{ pathname: `/channel/channelTitle` }}
+                  to={{ pathname: `/channel/${props.channelId}` }}
                 >
                   <Avatar alt="Remy Sharp" src={props.channelImage} />
                 </Link>
@@ -152,7 +172,7 @@ function VideoDetails(props) {
                 </p>
                 <Link
                   className="link"
-                  to={{ pathname: `/channel/channelTitle` }}
+                  to={{ pathname: `/channel/${props.channelId}` }}
                 >
                   <p style={{ color: "rgb(0, 0, 0, 0.6)" }}>
                     {props.channelTitle}

@@ -44,11 +44,11 @@ export const DurationVideoFormatter = (duration) => {
   for (var i = 0; i < duration.length; i++) {
     if (duration[i] >= "0" && duration[i] <= "9") {
       FormatTime += duration[i];
-    } else if (duration[i] == "H" || duration[i] == "M") {
+    } else if (duration[i] === "H" || duration[i] === "M") {
       FormatTime += ":";
     }
   }
-  if (FormatTime.charAt(FormatTime.length - 1) == ":") {
+  if (FormatTime.charAt(FormatTime.length - 1) === ":") {
     FormatTime += "00";
   }
   return FormatTime;
