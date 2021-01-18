@@ -28,6 +28,7 @@
 .playlist__item {
   position: relative;
   opacity: 1;
+  height: 180px;
 }
 
 .playlist__item:hover {
@@ -41,7 +42,7 @@
   width: 140px;
   position: absolute;
   right: 0;
-  bottom: 3%;
+  bottom: 0;
   color: white;
   display: flex;
   justify-content: center;
@@ -53,9 +54,7 @@
   transition: 0.5s ease;
   opacity: 0;
   position: absolute;
-  top: 36%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 0;
   text-align: center;
   color: white;
   width: 100%;

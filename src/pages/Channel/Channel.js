@@ -78,7 +78,7 @@ export default function Channel(props) {
       setData(res);
     });
     await getPlaylists(channelId).then((res) => {
-      // console.log("res", res);
+      console.log("playlist", res);
       setDataPlaylist(res);
     });
   }, []);
@@ -155,55 +155,58 @@ export default function Channel(props) {
                               history.push({
                                 pathname: `/watch/${res[0].snippet.resourceId.videoId}`,
                                 search: `?playlist=${itemPlaylist.id}`,
+                                state: {
+                                  data: res,
+                                },
                               });
                             });
-
-                            // <Link to={`/watch/afsfasfas`}></Link>;
-
-                            // console.log("test1", itemPlaylist.id);
-                            // console.log("test", playlistItem);
-                            // <Link to={{pathname: `/watch/`}}
                           };
-                          return (
-                            // <Link to={`/watch/dauhsds`}>
-                            <div
-                              style={{
-                                position: "relative",
-                                marginBottom: "10px",
-                              }}
-                              onClick={() => {
-                                watchPlaylistItem();
-                              }}
-                            >
-                              <div className="playlist__item">
-                                <img
-                                  className="playlist__img"
-                                  src={
-                                    itemPlaylist.snippet.thumbnails.medium.url
-                                  }
-                                ></img>
-                                <div className="playlist__img--overlay">
-                                  <p
-                                    style={{
-                                      fontSize: "25px",
-                                      paddingBottom: "5px",
-                                    }}
-                                  >
-                                    {itemPlaylist.contentDetails.itemCount}
-                                  </p>
-                                  <PlaylistPlay fontSize="large" />
+                          if (
+                            !itemPlaylist.snippet.thumbnails.default.url.includes(
+                              "no_thumbnail"
+                            )
+                          ) {
+                            return (
+                              <div
+                                style={{
+                                  position: "relative",
+                                  marginBottom: "10px",
+                                }}
+                                onClick={() => {
+                                  watchPlaylistItem();
+                                }}
+                              >
+                                <div className="playlist__item">
+                                  <img
+                                    className="playlist__img"
+                                    src={
+                                      itemPlaylist.snippet.thumbnails.medium.url
+                                    }
+                                  ></img>
+                                  <div className="playlist__img--overlay">
+                                    <p
+                                      style={{
+                                        fontSize: "25px",
+                                        paddingBottom: "5px",
+                                      }}
+                                    >
+                                      {itemPlaylist.contentDetails.itemCount}
+                                    </p>
+                                    <PlaylistPlay fontSize="large" />
+                                  </div>
                                 </div>
+                                <div className="playlist__item--hover">
+                                  <PlayArrow fontSize="large" />
+                                  <p style={{ fontSize: "23px" }}>
+                                    Phát tất cả
+                                  </p>
+                                </div>
+                                <p style={{ width: "320px", fontSize: "20px" }}>
+                                  {itemPlaylist.snippet.title}
+                                </p>
                               </div>
-                              <div className="playlist__item--hover">
-                                <PlayArrow fontSize="large" />
-                                <p style={{ fontSize: "23px" }}>Phát tất cả</p>
-                              </div>
-                              <p style={{ width: "320px", fontSize: "20px" }}>
-                                {itemPlaylist.snippet.title}
-                              </p>
-                            </div>
-                            // </Link>
-                          );
+                            );
+                          }
                         })}
                       </div>
                     </TabPanel>

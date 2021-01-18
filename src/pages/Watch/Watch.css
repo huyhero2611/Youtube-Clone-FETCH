@@ -62,6 +62,8 @@
   align-items: center;
 }
 
+/* Chat live */
+
 .watch__chatlive {
   height: 720px;
   border: 1px solid rgb(0, 0, 0, 0.36);
@@ -91,16 +93,6 @@
   flex-flow: column-reverse;
 }
 
-/* ChatLive Component*/
-/* .chatlive {
-  display: flex;
-  flex-flow: column-reverse;
-  overflow: scroll;
-  overflow-x: hidden;
-  height: 620px;
-  padding: 5px 20px;
-} */
-
 .chatlive__item {
   display: flex;
   align-items: center;
@@ -109,6 +101,26 @@
 
 .chatlive__item > p {
   padding-left: 10px;
+}
+
+/* Playlist */
+.watch__playlist {
+  display: block;
+  border: 2px solid rgb(0, 0, 0, 0.22);
+  padding: 15px;
+  border-radius: 1%;
+  box-shadow: 2px 1px 5px;
+  margin-bottom: 10px;
+}
+
+.watch__playlist--title {
+  font-weight: bold;
+  -webkit-line-clamp: 2; /* number of lines to show */
+}
+
+.link {
+  text-decoration: none;
+  color: black;
 }
 
 @media (max-width: 1280px) {

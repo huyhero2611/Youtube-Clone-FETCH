@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { Grid, Avatar, Badge, isMuiElement } from "@material-ui/core";
 import { ThumbUp } from "@material-ui/icons";
 import VideoList from "../../components/VideoList/VideoList";
@@ -31,16 +32,21 @@ function Watch(props) {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(async () => {
+    // const test = props.location;
+    // console.log("data", test);
+    // get PLAYLIST
     const playlistId = queryString.parse(props.location.search);
     if (playlistId.playlist !== undefined) {
-      await getPlayplistItems(playlistId.playlist).then((res) => {
+      const test = await getPlayplistItems(playlistId.playlist).then((res) => {
         console.log("res", res);
         setPlaylist(res);
       });
+      // console.log("test", test.length);
     } else {
       console.log("0");
     }
     let mounted = true;
+    // Video Details
     await getVideoDetails(videoId).then(async (res) => {
       new Promise(async (resolutionFunc, rejectionFunc) => {
         for (let data of res) {
@@ -62,7 +68,7 @@ function Watch(props) {
             setLive(false);
           }
           const channel = await getChannel(data.snippet.channelId);
-          console.log("watch channel", channel);
+          // console.log("watch channel", channel);
           data.channel = channel[0];
         }
         resolutionFunc(res);
@@ -73,6 +79,7 @@ function Watch(props) {
         setData(data);
       });
     });
+    // Comments
     await getListComments(videoId).then((res) => {
       if (mounted) {
         setLoading(false);
@@ -84,6 +91,7 @@ function Watch(props) {
     };
   }, [window.location.pathname]);
 
+  // Resize
   useEffect(() => {
     window.addEventListener(
       "resize",
@@ -267,6 +275,7 @@ function Watch(props) {
             xs={isMobile ? 12 : 3}
             justify="center"
           >
+            {/* is live */}
             {live ? (
               <div className="watch__chatlive">
                 <p className="watch__chatlive--header">Top Chat</p>
@@ -295,8 +304,41 @@ function Watch(props) {
                 </div>
               </div>
             ) : null}
+            {/* is playlist */}
+            {playlist.length > 0 ? (
+              <div className="watch__playlist">
+                <p style={{ fontSize: "20px", paddingBottom: "10px" }}>
+                  Playlist
+                </p>
+                {playlist.map((itemPlaylist) => {
+                  return (
+                    <Link
+                      className="link"
+                      to={{
+                        pathname: `/watch/${itemPlaylist.snippet.resourceId.videoId}`,
+                        search: `?playlist=${itemPlaylist.snippet.playlistId}`,
+                      }}
+                    >
+                      <div style={{ display: "flex", paddingBottom: "10px" }}>
+                        <img
+                          src={itemPlaylist.snippet.thumbnails.default.url}
+                        />
+                        <div style={{ paddingLeft: "10px" }}>
+                          <p className="description--text watch__playlist--title">
+                            {itemPlaylist.snippet.title}
+                          </p>
+                          <p style={{ color: "rgb(0,0,0,0.66)" }}>
+                            {itemPlaylist.snippet.channelTitle}
+                          </p>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            ) : null}
             <div className="watch__videos--next">
-              <p style={{}}>Tiếp theo</p>
+              <p style={{ fontSize: "20px" }}>Tiếp theo</p>
             </div>
             <div className="watch__videos--list">
               <VideoList videoId={videoId} />
