@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const APP_KEY = "AIzaSyDXces1UrddBMx7vReLTI3l7I709hzH5Ks";
+const APP_KEY = "AIzaSyB39Fa8R-tMxxsbfwHf0C7Hkc0xfyOwkiY";
 /*
 APP KEY
 huyhero2611     AIzaSyBvW9hL8LcRCGyTYUuLykpdjp064Vou0OY
@@ -118,7 +118,6 @@ export const getListComments = (videoId) => {
       key: APP_KEY,
     },
   }).then((data) => data.data);
-  // console.log("comment", result);
   return result;
 };
 
@@ -132,7 +131,6 @@ export const getMoreListComments = (videoId, nextPage) => {
       key: APP_KEY,
     },
   }).then((data) => data.data);
-  // console.log("comment", result);
   return result;
 };
 

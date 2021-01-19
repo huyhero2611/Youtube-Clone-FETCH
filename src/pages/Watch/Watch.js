@@ -131,7 +131,6 @@ function Watch(props) {
                 stopOnUnmount="false"
               ></VideoPlayer>
               {data.map((item, index) => {
-                // console.log("res", item);
                 const tags = item.snippet.tags;
                 return (
                   <div className="watch__video--info" key={index}>

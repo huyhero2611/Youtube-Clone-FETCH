@@ -100,7 +100,6 @@ export default function Channel(props) {
     });
     await getVideosChannel(channelId).then((res) => {
       setNextPageVideosChannel(res.nextPageToken);
-      // console.log("videoschannel", res);
       new Promise(async (resolutionFunc, rejectionFunc) => {
         for (let data of res.items) {
           let videoId;
@@ -112,7 +111,6 @@ export default function Channel(props) {
           } else {
             continue;
           }
-          // console.log("videoid", videoId);
         }
         resolutionFunc(res.items);
       }).then((data) => {
@@ -121,7 +119,6 @@ export default function Channel(props) {
       });
     });
     await getPlaylists(channelId).then((res) => {
-      // console.log("playlist", res);
       setDataPlaylist(res);
     });
   }, []);
@@ -200,8 +197,6 @@ export default function Channel(props) {
                           onChange={handleChange}
                           aria-label="simple tabs example"
                         >
-                          {/* <Tab label="Trang chủ" {...a11yProps(0)} /> */}
-
                           <Tab label="Videos" {...a11yProps(0)} />
                           <Tab label="Danh sách phát" {...a11yProps(1)} />
 
@@ -209,10 +204,6 @@ export default function Channel(props) {
                         </Tabs>
                       </div>
                     </AppBar>
-                    {/* Home */}
-                    {/* <TabPanel value={value} index={0}>
-                      Trang chủ
-                    </TabPanel> */}
                     {/* Videos */}
                     <TabPanel value={value} index={0}>
                       {loading ? (
@@ -226,8 +217,6 @@ export default function Channel(props) {
                         >
                           <div className="channel__videos">
                             {videosChannel.map((itemVideoChannel) => {
-                              // console.log("check", itemVideoChannel);
-
                               if (itemVideoChannel.duration !== undefined) {
                                 return (
                                   <Link

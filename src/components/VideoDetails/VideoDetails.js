@@ -16,8 +16,6 @@ import "./VideoDetails.css";
 import { Link } from "react-router-dom";
 
 function VideoDetails(props) {
-  // const videoSrc = `https://www.youtube.com/embed/${props.videoId}`;
-  // console.log("viewlivecount", props.viewLiveCount);
   const [page, setPage] = useState("");
 
   useEffect(() => {

@@ -50,8 +50,14 @@ export const DurationVideoFormatter = (duration) => {
       FormatTime += ":";
     }
   }
-  if (FormatTime.charAt(FormatTime.length - 1) === ":") {
-    FormatTime += "00";
+  if (FormatTime === "0") {
+    return FormatTime;
+  } else if (FormatTime.length == 2) {
+    FormatTime = "00:" + FormatTime;
+  } else if (FormatTime.length < 4) {
+    FormatTime = FormatTime[0] + ":" + "0" + FormatTime[2];
+  } else if (FormatTime.length == 4 && FormatTime.indexOf(":") == 2) {
+    FormatTime = FormatTime.substring(0, 3) + "0" + FormatTime[3];
   }
   return FormatTime;
 };

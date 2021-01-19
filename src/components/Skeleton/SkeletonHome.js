@@ -25,7 +25,7 @@ export function SkeletonHome(props) {
                 </div>
                 <div
                   style={{
-                    width: "280px",
+                    width: "300px",
                     height: "45px",
                     paddingLeft: "10px",
                   }}
@@ -69,7 +69,7 @@ export function SkeletonHomeLoading(props) {
                 </div>
                 <div
                   style={{
-                    width: "280px",
+                    width: "300px",
                     height: "45px",
                     paddingLeft: "10px",
                   }}
