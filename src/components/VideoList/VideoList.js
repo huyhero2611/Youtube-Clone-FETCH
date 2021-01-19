@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import VideoDetails from "../VideoDetails/VideoDetails";
 import "./VideoList.css";
-import Loading from "../../assets/loading7.gif";
-import LoadingHome from "../../assets/loading-home.png";
 import {
   getMostPopularVideos,
   searchRequest,
