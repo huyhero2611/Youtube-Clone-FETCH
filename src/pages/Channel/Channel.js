@@ -17,6 +17,7 @@ import { Loading } from "../../assets/loading-home.png";
 import NavBar from "../../components/NavBar/NavBar";
 import {
   getChannel,
+  getMoreVideosChannel,
   getPlaylists,
   getPlayplistItems,
   getVideoDetails,
@@ -30,7 +31,11 @@ import {
   ViewNumberFormatterDetails,
 } from "../../utils/index";
 import "./Channel.css";
-import SkeletonVideoChannel from "../../components/Skeleton/SkeletonVideoChannel";
+import {
+  SkeletonVideoChannel,
+  SkeletonVideoChannelLoading,
+} from "../../components/Skeleton/SkeletonVideoChannel";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -86,6 +91,7 @@ export default function Channel(props) {
   const [dataPlaylist, setDataPlaylist] = useState([]);
   const [videosChannel, setVideosChannel] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [nextPageVideosChannel, setNextPageVideosChannel] = useState("");
 
   const history = useHistory();
 
@@ -94,9 +100,10 @@ export default function Channel(props) {
       setData(res);
     });
     await getVideosChannel(channelId).then((res) => {
+      setNextPageVideosChannel(res.nextPageToken);
       // console.log("videoschannel", res);
       new Promise(async (resolutionFunc, rejectionFunc) => {
-        for (let data of res) {
+        for (let data of res.items) {
           let videoId;
           if (data.id.videoId !== undefined) {
             videoId = data.id.videoId;
@@ -108,7 +115,7 @@ export default function Channel(props) {
           }
           // console.log("videoid", videoId);
         }
-        resolutionFunc(res);
+        resolutionFunc(res.items);
       }).then((data) => {
         setLoading(false);
         setVideosChannel(data);
@@ -119,6 +126,28 @@ export default function Channel(props) {
       setDataPlaylist(res);
     });
   }, []);
+
+  function nextPage() {
+    getMoreVideosChannel(channelId, nextPageVideosChannel).then((res) => {
+      setNextPageVideosChannel(res.nextPageToken);
+      new Promise(async (resolutionFunc, rejectionFunc) => {
+        for (let data of res.items) {
+          let videoId;
+          if (data.id.videoId !== undefined) {
+            videoId = data.id.videoId;
+            const video = await getVideoDetails(videoId);
+            data.duration = video[0].contentDetails.duration;
+            data.viewCount = video[0].statistics.viewCount;
+          } else {
+            continue;
+          }
+        }
+        resolutionFunc(res.items);
+      }).then((data) => {
+        setVideosChannel([...videosChannel, ...data]);
+      });
+    });
+  }
 
   return (
     <div className="channel">
@@ -190,51 +219,58 @@ export default function Channel(props) {
                       {loading ? (
                         <SkeletonVideoChannel />
                       ) : (
-                        <div className="channel__videos">
-                          {videosChannel.map((itemVideoChannel) => {
-                            // console.log("check", itemVideoChannel);
+                        <InfiniteScroll
+                          dataLength={videosChannel.length}
+                          next={() => nextPage()}
+                          hasMore={true}
+                          loader={<SkeletonVideoChannelLoading />}
+                        >
+                          <div className="channel__videos">
+                            {videosChannel.map((itemVideoChannel) => {
+                              // console.log("check", itemVideoChannel);
 
-                            if (itemVideoChannel.duration !== undefined) {
-                              return (
-                                <Link
-                                  className="link"
-                                  to={`/watch/${itemVideoChannel.id.videoId}`}
-                                >
-                                  <div className="channel__videos--video">
-                                    <div className="video__img">
-                                      <img
-                                        width="250px"
-                                        src={
-                                          itemVideoChannel.snippet.thumbnails
-                                            .medium.url
-                                        }
-                                      />
-                                      <div className="video__img--duration">
-                                        <span style={{ padding: "5px" }}>
-                                          {DurationVideoFormatter(
-                                            itemVideoChannel.duration
-                                          )}
-                                        </span>
+                              if (itemVideoChannel.duration !== undefined) {
+                                return (
+                                  <Link
+                                    className="link"
+                                    to={`/watch/${itemVideoChannel.id.videoId}`}
+                                  >
+                                    <div className="channel__videos--video">
+                                      <div className="video__img">
+                                        <img
+                                          width="250px"
+                                          src={
+                                            itemVideoChannel.snippet.thumbnails
+                                              .medium.url
+                                          }
+                                        />
+                                        <div className="video__img--duration">
+                                          <span style={{ padding: "5px" }}>
+                                            {DurationVideoFormatter(
+                                              itemVideoChannel.duration
+                                            )}
+                                          </span>
+                                        </div>
                                       </div>
-                                    </div>
 
-                                    <p className="limitline video__title">
-                                      {itemVideoChannel.snippet.title}
-                                    </p>
-                                    <p className="text-opacity">
-                                      {itemVideoChannel.snippet.channelTitle}
-                                    </p>
-                                    <p className="text-opacity">{`${ViewNumberFormatter(
-                                      itemVideoChannel.viewCount
-                                    )} lượt xem・${TimePublishToNow(
-                                      itemVideoChannel.snippet.publishedAt
-                                    )}`}</p>
-                                  </div>
-                                </Link>
-                              );
-                            }
-                          })}
-                        </div>
+                                      <p className="limitline video__title">
+                                        {itemVideoChannel.snippet.title}
+                                      </p>
+                                      <p className="text-opacity">
+                                        {itemVideoChannel.snippet.channelTitle}
+                                      </p>
+                                      <p className="text-opacity">{`${ViewNumberFormatter(
+                                        itemVideoChannel.viewCount
+                                      )} lượt xem・${TimePublishToNow(
+                                        itemVideoChannel.snippet.publishedAt
+                                      )}`}</p>
+                                    </div>
+                                  </Link>
+                                );
+                              }
+                            })}
+                          </div>
+                        </InfiniteScroll>
                       )}
                     </TabPanel>
                     {/* Playlist */}

@@ -179,10 +179,23 @@ export const getVideosChannel = (channelId) => {
   const result = YouTubeAPI.get("search", {
     params: {
       part: "snippet",
-      maxResults: 50,
+      maxResults: 30,
       channelId: channelId,
       key: APP_KEY,
     },
-  }).then((data) => data.data.items);
+  }).then((data) => data.data);
+  return result;
+};
+
+export const getMoreVideosChannel = (channelId, nextPage) => {
+  const result = YouTubeAPI.get("search", {
+    params: {
+      part: "snippet",
+      maxResults: 20,
+      pageToken: nextPage,
+      channelId: channelId,
+      key: APP_KEY,
+    },
+  }).then((data) => data.data);
   return result;
 };
