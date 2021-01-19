@@ -1,5 +1,28 @@
+/* Common */
+.limitline {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+
+.link {
+  text-decoration: none;
+  color: black;
+}
+
+.text-opacity {
+  color: rgb(0, 0, 0, 0.66);
+}
+
+.bg-opacity {
+  background-color: rgb(0, 0, 0, 0.66);
+}
+
 .tabs__header {
-  background-color: red;
+  background-color: white;
+  color: black;
 }
 
 .channel__content {
@@ -7,23 +30,59 @@
 }
 .channel__intro {
   display: flex;
+  margin: 10px;
 }
 
 .channel__intro--title {
   display: block;
-}
-
-.introduction__des {
-  font-size: 20px;
-  font-weight: bold;
-  padding-bottom: 10px;
+  margin: 10px;
 }
 
 .channel__playlists {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
+  /* justify-content: space-around; */
 }
+.channel__playlists > * {
+  flex: 0 0 20%;
+}
+
+/* Videos */
+.channel__videos {
+  display: flex;
+  flex-wrap: wrap;
+  /* justify-content: space-around; */
+}
+
+.channel__videos--video {
+  width: 250px;
+  margin-bottom: 10px;
+  padding: 5px;
+}
+
+.video__img {
+  position: relative;
+}
+
+.video__img--duration {
+  position: absolute;
+  bottom: 5px;
+  right: 0;
+  background-color: rgb(0, 0, 0, 0.88);
+  color: white;
+  margin: 5px;
+  border-radius: 5%;
+}
+
+.video__title {
+  font-size: 17px;
+}
+
+.video__channelTitle {
+  color: rgb(0, 0, 0, 0.66);
+}
+
+/* Playlist */
 
 .playlist__item {
   position: relative;
@@ -35,14 +94,19 @@
   opacity: 0.3;
   background-color: rgb(0, 0, 0, 0.77);
 }
+/* 
+.playlist__img {
+  width: 250px;
+} */
 
 .playlist__img--overlay {
   background-color: rgb(0, 0, 0, 0.77);
   height: 180px;
   width: 140px;
+
   position: absolute;
-  right: 0;
-  bottom: 0;
+  right: 0px;
+  bottom: 0px;
   color: white;
   display: flex;
   justify-content: center;
@@ -54,10 +118,11 @@
   transition: 0.5s ease;
   opacity: 0;
   position: absolute;
-  top: 0;
+  top: 10px;
+  left: 25px;
   text-align: center;
   color: white;
-  width: 100%;
+  width: 87%;
   height: 180px;
   display: flex;
   justify-content: center;
@@ -67,4 +132,25 @@
 .playlist__item--hover:hover {
   opacity: 1;
   cursor: pointer;
+}
+
+/* Intro */
+
+.channel__introduction {
+  display: flex;
+}
+
+.channel__introduction--des {
+  width: 60%;
+  margin-right: 3%;
+}
+
+.hr--format {
+  border: 0.1px solid rgb(0, 0, 0, 0.11);
+}
+
+.des__text {
+  font-size: 20px;
+  font-weight: bold;
+  padding-bottom: 10px;
 }

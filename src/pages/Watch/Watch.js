@@ -38,7 +38,7 @@ function Watch(props) {
     const playlistId = queryString.parse(props.location.search);
     if (playlistId.playlist !== undefined) {
       const test = await getPlayplistItems(playlistId.playlist).then((res) => {
-        console.log("res", res);
+        // console.log("res", res);
         setPlaylist(res);
       });
       // console.log("test", test.length);
@@ -125,6 +125,7 @@ function Watch(props) {
               ></VideoPlayer>
               {/* </div> */}
               {data.map((item, index) => {
+                console.log("res", item);
                 const tags = item.snippet.tags;
                 return (
                   <div className="watch__video--info" key={index}>
@@ -167,14 +168,25 @@ function Watch(props) {
                     </div>
                     <hr className="hr__watch" />
                     <div className="info__channel">
-                      <Avatar
-                        alt="Remy Sharp"
-                        src={item.channel.snippet.thumbnails.default.url}
-                      />
+                      <Link
+                        className="link"
+                        to={`/channel/${item.snippet.channelId}`}
+                      >
+                        <Avatar
+                          alt="Remy Sharp"
+                          src={item.channel.snippet.thumbnails.default.url}
+                        />
+                      </Link>
                       <div className="channel--overview">
-                        <p style={{ fontSize: "130%" }}>
-                          {item.snippet.channelTitle}
-                        </p>
+                        <Link
+                          className="link"
+                          to={`/channel/${item.snippet.channelId}`}
+                        >
+                          <p style={{ fontSize: "130%" }}>
+                            {item.snippet.channelTitle}
+                          </p>
+                        </Link>
+
                         <p style={{ marginBottom: "15px" }}>
                           {`${ViewNumberFormatter(
                             item.channel.statistics.subscriberCount

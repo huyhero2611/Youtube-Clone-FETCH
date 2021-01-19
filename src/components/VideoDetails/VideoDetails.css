@@ -1,5 +1,3 @@
-/* PC */
-
 /* Home Page */
 .videodetails {
   flex-basis: 23%;
@@ -12,7 +10,12 @@
   margin-bottom: 10px;
 }
 
+.channelTitle {
+  font-size: 25px;
+}
+
 .videotitle {
+  font-size: 20px;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -32,6 +35,12 @@
 .duration--result {
   bottom: 20px !important;
   right: 40px !important;
+}
+
+.infoChannel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .videodetails__content--result {
@@ -73,6 +82,21 @@
   position: relative;
 }
 
+.videodetails__imgchannel {
+  min-width: 360px;
+  height: 200px;
+  margin-bottom: 15px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.videodetails__img--imgchannel {
+  border-radius: 50%;
+  width: 50%;
+}
+
 .duration {
   position: absolute;
   bottom: -2px;
@@ -96,6 +120,10 @@
 .link {
   text-decoration: none;
   color: black;
+}
+
+.text-opacity {
+  color: rgb(0, 0, 0, 0.66);
 }
 
 /* Tablet */

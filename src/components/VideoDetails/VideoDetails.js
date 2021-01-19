@@ -28,69 +28,116 @@ function VideoDetails(props) {
     }
   }, [window.location.pathname]);
 
-  // console.log(DurationVideoFormatter(`${props.duration}`));
-
   return (
     <div>
       {page === "result" ? (
         // result page
-        <Link className="link" to={{ pathname: `/watch/${props.videoId}` }}>
+        <Link
+          className="link"
+          to={
+            props.isChannel
+              ? { pathname: `/channel/${props.channelId}` }
+              : { pathname: `/watch/${props.videoId}` }
+          }
+        >
+          {props.isChannel ? (
+            <hr style={{ border: "1px solid rgba(0, 0, 0, 0.33)" }} />
+          ) : null}
           <div className="videodetails--result">
-            <div className="videodetails__img">
+            <div
+              className={
+                props.isChannel
+                  ? "videodetails__imgchannel"
+                  : "videodetails__img"
+              }
+            >
               <img
-                className="videodetails__img--img"
+                className={
+                  props.isChannel
+                    ? "videodetails__img--imgchannel"
+                    : "videodetails__img--img"
+                }
                 src={props.image}
                 alt="huyhero"
               ></img>
-              {DurationVideoFormatter(`${props.duration}`) != "0" ? (
-                <div className="duration duration--result">
-                  <span style={{ padding: "5px" }}>
-                    {DurationVideoFormatter(`${props.duration}`)}
-                  </span>
-                </div>
-              ) : (
-                <p className="duration duration--result videodetails__content--live">
-                  Trực tiếp
-                </p>
+              {props.isChannel ? null : (
+                <>
+                  {DurationVideoFormatter(`${props.duration}`) != "0" ? (
+                    <div className="duration duration--result">
+                      <span style={{ padding: "5px" }}>
+                        {DurationVideoFormatter(`${props.duration}`)}
+                      </span>
+                    </div>
+                  ) : (
+                    <p className="duration duration--result videodetails__content--live">
+                      Trực tiếp
+                    </p>
+                  )}
+                </>
               )}
             </div>
-
-            <div className="videodetails__content--result">
-              <div className="videodetais__content--result--title">
-                <p className="videotitle" style={{ fontSize: "20px" }}>
-                  {props.title}
-                </p>
-                {props.liveBroadcastContent === "none"
-                  ? `${ViewNumberFormatter(
-                      props.viewCount
-                    )} lượt xem・${TimePublishToNow(props.publishedAt)}`
-                  : `${ViewNumberFormatter(
-                      props.viewLiveCount
-                    )} người đang xem`}
-              </div>
-              <Link
-                className="link"
-                to={{ pathname: `/channel/${props.channelId}` }}
-              >
-                <div
-                  style={{ display: "flex" }}
-                  className="videodetais__content--result--channel"
-                >
-                  <Avatar alt="Remy Sharp" src={props.channelImage} />
+            <div className={props.isChannel ? "infoChannel" : null}>
+              <div className="videodetails__content--result">
+                <div className="videodetais__content--result--title">
                   <p
-                    style={{ color: "rgb(0, 0, 0, 0.6)", paddingLeft: "10px" }}
+                    className={props.isChannel ? "channelTitle" : "videotitle"}
                   >
-                    {props.channelTitle}
+                    {props.title}
+                  </p>
+                  {props.isChannel ? (
+                    <div className="text-opacity">
+                      {`${ViewNumberFormatter(
+                        props.subChannel
+                      )} lượt đăng ký・${props.videoCountChannel} videos`}
+                    </div>
+                  ) : (
+                    <div className="text-opacity">
+                      {props.liveBroadcastContent === "none"
+                        ? `${ViewNumberFormatter(
+                            props.viewCount
+                          )} lượt xem・${TimePublishToNow(props.publishedAt)}`
+                        : `${ViewNumberFormatter(
+                            props.viewLiveCount
+                          )} người đang xem`}
+                    </div>
+                  )}
+                </div>
+                {props.isChannel ? null : (
+                  <Link
+                    className="link"
+                    to={{ pathname: `/channel/${props.channelId}` }}
+                  >
+                    <div
+                      style={{ display: "flex" }}
+                      className="videodetais__content--result--channel"
+                    >
+                      <Avatar alt="Remy Sharp" src={props.channelImage} />
+                      <p
+                        className="text-opacity"
+                        style={{
+                          paddingLeft: "10px",
+                        }}
+                      >
+                        {props.channelTitle}
+                      </p>
+                    </div>
+                  </Link>
+                )}
+
+                <div className="videodetails__content--result--description">
+                  <p
+                    style={{ fontSize: "15px" }}
+                    className="videotitle result--description text-opacity"
+                  >
+                    {props.description}
                   </p>
                 </div>
-              </Link>
-              <div className="videodetails__content--result--description">
-                <p className="videotitle result--description">
-                  {props.description}
-                </p>
               </div>
             </div>
           </div>
+          {props.isChannel ? (
+            <hr style={{ border: "1px solid rgba(0, 0, 0, 0.33)" }} />
+          ) : null}
         </Link>
       ) : page === "watch" ? (
         <Link className="link" to={{ pathname: `/watch/${props.videoId}` }}>

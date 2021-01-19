@@ -12,6 +12,10 @@ import {
   getRelatedToVideo,
   getVideoLiveStreaming,
 } from "../../api/baseApi";
+//Skeleton
+import SkeletonHome from "../../components/Skeleton/SkeletonHome";
+import SkeletonResult from "../../components/Skeleton/SkeletonResult";
+import SkeletonWatch from "../../components/Skeleton/SkeletonWatch";
 
 function VideoList(props) {
   const [data, setData] = useState([]);
@@ -28,25 +32,21 @@ function VideoList(props) {
             let videoId;
             if (data.id.videoId !== undefined) {
               videoId = data.id.videoId;
-            } else continue;
-
-            const video = await getVideoDetails(videoId);
-            // let videoLiveStreaming;
-            // console.log("result__video", video);
-            if (video[0].liveStreamingDetails !== undefined) {
-              // videoLiveStreaming = await getVideoLiveStreaming(videoId);
-              data.viewLiveCount =
-                video[0].liveStreamingDetails.concurrentViewers;
-              // console.log(
-              //   "aa",
-              //   video[0].liveStreamingDetails.concurrentViewers
-              // );
+              const video = await getVideoDetails(videoId);
+              if (video[0].liveStreamingDetails !== undefined) {
+                data.viewLiveCount =
+                  video[0].liveStreamingDetails.concurrentViewers;
+              } else {
+                data.viewLiveCount = -1;
+              }
+              data.duration = video[0].contentDetails.duration;
+              data.viewCount = video[0].statistics.viewCount;
             } else {
-              data.viewLiveCount = -1;
+              data.isChannel = true;
             }
-            data.duration = video[0].contentDetails.duration;
-            data.viewCount = video[0].statistics.viewCount;
             const channel = await getChannel(channelId);
+            data.subChannel = channel[0].statistics.subscriberCount;
+            data.videoCountChannel = channel[0].statistics.videoCount;
             data.channelImage = channel[0].snippet.thumbnails.default.url;
             data.id = data.id.videoId;
           }
@@ -101,7 +101,7 @@ function VideoList(props) {
       });
     } else {
       getMostPopularVideos().then(async (res) => {
-        console.log("home", res);
+        // console.log("home", res);
         new Promise(async (resolutionFunc, rejectionFunc) => {
           for (let data of res) {
             data.duration = data.contentDetails.duration;
@@ -142,6 +142,10 @@ function VideoList(props) {
         liveBroadcastContent={res.snippet.liveBroadcastContent}
         viewLiveCount={res.viewLiveCount}
         channelId={res.snippet.channelId}
+        // IF result is Channel
+        isChannel={res.isChannel}
+        subChannel={res.subChannel}
+        videoCountChannel={res.videoCountChannel}
       />
     );
   });
@@ -151,28 +155,11 @@ function VideoList(props) {
       {loading ? (
         <>
           {window.location.pathname.includes("watch") ? (
-            <img
-              style={{
-                position: "relative",
-                top: "100%",
-              }}
-              src={LoadingWatch}
-            />
+            <SkeletonWatch />
           ) : window.location.pathname.includes("result") ? (
-            <img
-              style={{
-                position: "relative",
-                left: "550px",
-                top: "350px",
-                width: "300px",
-              }}
-              src={Loading}
-            />
+            <SkeletonResult />
           ) : (
-            <img
-              style={{ position: "relative", top: "3%", left: "-2%" }}
-              src={LoadingHome}
-            />
+            <SkeletonHome />
           )}
         </>
       ) : (

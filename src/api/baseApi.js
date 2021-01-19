@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const APP_KEY = "AIzaSyArga-Cyq0TvXLfiuQP5U4_ot7PKPpVwhM";
+const APP_KEY = "AIzaSyAe5StmTvlOGpufcLsRMcAM0sC2RexewgA";
 /*
 APP KEY
 huyhero2611     AIzaSyBvW9hL8LcRCGyTYUuLykpdjp064Vou0OY
@@ -21,7 +21,7 @@ export const getMostPopularVideos = () => {
   const result = YouTubeAPI.get("videos", {
     params: {
       part: "snippet,statistics, contentDetails",
-      maxResults: 24,
+      maxResults: 48,
       chart: "mostPopular",
       key: APP_KEY,
     },
@@ -41,17 +41,6 @@ export const getVideoDetails = (videoId) => {
   }).then(({ data }) => data.items);
   return result;
 };
-
-// export const getVideoLiveStreaming = (videoId) => {
-//   const result = YouTubeAPI.get("videos", {
-//     params: {
-//       part: "liveStreamingDetails",
-//       id: videoId,
-//       key: APP_KEY,
-//     },
-//   }).then(({ data }) => data.items);
-//   return result;
-// };
 
 // SEARCH
 export const searchRequest = (inputSearch) => {
@@ -73,7 +62,7 @@ export const searchRequest = (inputSearch) => {
       //     },
       {
         part: "snippet",
-        maxResults: 20,
+        maxResults: 50,
         q: inputSearch,
         key: APP_KEY,
       },
@@ -98,7 +87,7 @@ export const getRelatedToVideo = (videoId) => {
   const result = YouTubeAPI.get("search", {
     params: {
       part: "snippet",
-      maxResults: 20,
+      maxResults: 50,
       relatedToVideoId: videoId,
       type: "video",
       key: APP_KEY,
@@ -120,6 +109,7 @@ export const getListComments = (videoId) => {
   return result;
 };
 
+// GET INFO OF LIVE STREAM
 export const getChatLive = (chatId) => {
   const result = YouTubeAPI.get("liveChat/messages", {
     params: {
@@ -131,6 +121,7 @@ export const getChatLive = (chatId) => {
   return result;
 };
 
+// GET PLAYLIST
 export const getPlaylists = (channelId) => {
   const result = YouTubeAPI.get("playlists", {
     params: {
@@ -143,12 +134,26 @@ export const getPlaylists = (channelId) => {
   return result;
 };
 
+// GET PLAYLIST ITEMS
 export const getPlayplistItems = (playlistId) => {
   const result = YouTubeAPI.get("playlistItems", {
     params: {
       part: "snippet",
       maxResults: 50,
       playlistId: playlistId,
+      key: APP_KEY,
+    },
+  }).then((data) => data.data.items);
+  return result;
+};
+
+// GET VIDEO OF CHANNEL
+export const getVideosChannel = (channelId) => {
+  const result = YouTubeAPI.get("search", {
+    params: {
+      part: "snippet",
+      maxResults: 50,
+      channelId: channelId,
       key: APP_KEY,
     },
   }).then((data) => data.data.items);

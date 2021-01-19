@@ -10,12 +10,27 @@ import {
   Avatar,
 } from "@material-ui/core";
 import { PlaylistPlay, PlayArrow } from "@material-ui/icons";
-import NavBar from "../../components/NavBar/NavBar";
 import { makeStyles } from "@material-ui/core/styles";
 import PropTypes from "prop-types";
-import { getChannel, getPlaylists, getPlayplistItems } from "../../api/baseApi";
-import { ViewNumberFormatter } from "../../utils/index";
+import { Loading } from "../../assets/loading-home.png";
+
+import NavBar from "../../components/NavBar/NavBar";
+import {
+  getChannel,
+  getPlaylists,
+  getPlayplistItems,
+  getVideoDetails,
+  getVideosChannel,
+} from "../../api/baseApi";
+import {
+  DurationVideoFormatter,
+  TimePublishToNow,
+  ViewNumberFormatter,
+  TimeFormatter,
+  ViewNumberFormatterDetails,
+} from "../../utils/index";
 import "./Channel.css";
+import SkeletonVideoChannel from "../../components/Skeleton/SkeletonVideoChannel";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -69,16 +84,38 @@ export default function Channel(props) {
   const channelId = props.match.params.channelId;
   const [data, setData] = useState([]);
   const [dataPlaylist, setDataPlaylist] = useState([]);
+  const [videosChannel, setVideosChannel] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const history = useHistory();
 
   useEffect(async () => {
     await getChannel(channelId).then((res) => {
-      // console.log("res", res);
       setData(res);
     });
+    await getVideosChannel(channelId).then((res) => {
+      // console.log("videoschannel", res);
+      new Promise(async (resolutionFunc, rejectionFunc) => {
+        for (let data of res) {
+          let videoId;
+          if (data.id.videoId !== undefined) {
+            videoId = data.id.videoId;
+            const video = await getVideoDetails(videoId);
+            data.duration = video[0].contentDetails.duration;
+            data.viewCount = video[0].statistics.viewCount;
+          } else {
+            continue;
+          }
+          // console.log("videoid", videoId);
+        }
+        resolutionFunc(res);
+      }).then((data) => {
+        setLoading(false);
+        setVideosChannel(data);
+      });
+    });
     await getPlaylists(channelId).then((res) => {
-      console.log("playlist", res);
+      // console.log("playlist", res);
       setDataPlaylist(res);
     });
   }, []);
@@ -95,15 +132,14 @@ export default function Channel(props) {
           xs={10}
           justify="space-around"
         >
-          <div className={classes.root}>
+          <div style={{ width: "102%" }} className={classes.root}>
             {data.map((item) => {
               return (
                 <>
                   <div className="channel__banner">
                     <img
                       style={{
-                        width: "1667px",
-                        height: "270px",
+                        width: "100%",
                       }}
                       src={`${item.brandingSettings.image.bannerExternalUrl}=w2120-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj`}
                     />
@@ -111,13 +147,18 @@ export default function Channel(props) {
                   <div className="channel__intro">
                     <div className="channel__intro--logo">
                       <img
+                        style={{ borderRadius: "50%" }}
                         alt="huyhero"
                         src={item.snippet.thumbnails.default.url}
                       />
                     </div>
                     <div className="channel__intro--title">
-                      <p>{item.snippet.title}</p>
-                      <p>{`${ViewNumberFormatter(
+                      <p style={{ fontSize: "25px", fontWeight: "bold" }}>
+                        {item.snippet.title}
+                      </p>
+                      <p
+                        style={{ color: "rgb(0,0,0,0.66)" }}
+                      >{`${ViewNumberFormatter(
                         item.statistics.subscriberCount
                       )} người đăng ký`}</p>
                     </div>
@@ -131,23 +172,75 @@ export default function Channel(props) {
                           onChange={handleChange}
                           aria-label="simple tabs example"
                         >
-                          <Tab label="Trang chủ" {...a11yProps(0)} />
-                          <Tab label="Videos" {...a11yProps(1)} />
-                          <Tab label="Danh sách phát" {...a11yProps(2)} />
-                          <Tab label="Giới thiệu" {...a11yProps(3)} />
+                          {/* <Tab label="Trang chủ" {...a11yProps(0)} /> */}
+
+                          <Tab label="Videos" {...a11yProps(0)} />
+                          <Tab label="Danh sách phát" {...a11yProps(1)} />
+
+                          <Tab label="Giới thiệu" {...a11yProps(2)} />
                         </Tabs>
                       </div>
                     </AppBar>
-                    <TabPanel value={value} index={0}>
+                    {/* Home */}
+                    {/* <TabPanel value={value} index={0}>
                       Trang chủ
+                    </TabPanel> */}
+                    {/* Videos */}
+                    <TabPanel value={value} index={0}>
+                      {loading ? (
+                        <SkeletonVideoChannel />
+                      ) : (
+                        <div className="channel__videos">
+                          {videosChannel.map((itemVideoChannel) => {
+                            // console.log("check", itemVideoChannel);
+
+                            if (itemVideoChannel.duration !== undefined) {
+                              return (
+                                <Link
+                                  className="link"
+                                  to={`/watch/${itemVideoChannel.id.videoId}`}
+                                >
+                                  <div className="channel__videos--video">
+                                    <div className="video__img">
+                                      <img
+                                        width="250px"
+                                        src={
+                                          itemVideoChannel.snippet.thumbnails
+                                            .medium.url
+                                        }
+                                      />
+                                      <div className="video__img--duration">
+                                        <span style={{ padding: "5px" }}>
+                                          {DurationVideoFormatter(
+                                            itemVideoChannel.duration
+                                          )}
+                                        </span>
+                                      </div>
+                                    </div>
+
+                                    <p className="limitline video__title">
+                                      {itemVideoChannel.snippet.title}
+                                    </p>
+                                    <p className="text-opacity">
+                                      {itemVideoChannel.snippet.channelTitle}
+                                    </p>
+                                    <p className="text-opacity">{`${ViewNumberFormatter(
+                                      itemVideoChannel.viewCount
+                                    )} lượt xem・${TimePublishToNow(
+                                      itemVideoChannel.snippet.publishedAt
+                                    )}`}</p>
+                                  </div>
+                                </Link>
+                              );
+                            }
+                          })}
+                        </div>
+                      )}
                     </TabPanel>
+                    {/* Playlist */}
                     <TabPanel value={value} index={1}>
-                      Videos
-                    </TabPanel>
-                    <TabPanel value={value} index={2}>
                       <div className="channel__playlists">
                         {dataPlaylist.map((itemPlaylist) => {
-                          // console.log("res", itemPlaylist);
                           const watchPlaylistItem = () => {
                             const playlistItem = getPlayplistItems(
                               itemPlaylist.id
@@ -171,6 +264,7 @@ export default function Channel(props) {
                                 style={{
                                   position: "relative",
                                   marginBottom: "10px",
+                                  padding: "10px 25px",
                                 }}
                                 onClick={() => {
                                   watchPlaylistItem();
@@ -210,12 +304,30 @@ export default function Channel(props) {
                         })}
                       </div>
                     </TabPanel>
-                    <TabPanel value={value} index={3}>
+                    <TabPanel value={value} index={2}>
                       <div className="channel__introduction">
-                        <p className="introduction__des">Mô tả</p>
-                        {item.snippet.description.split("\n").map((item) => {
-                          return <>{item == "" ? <br /> : <p>{item}</p>}</>;
-                        })}
+                        <div className="channel__introduction--des">
+                          <p className="des__text">Mô tả</p>
+                          {item.snippet.description.split("\n").map((item) => {
+                            return <>{item == "" ? <br /> : <p>{item}</p>}</>;
+                          })}
+                        </div>
+                        <div className="channel__introduction--statistics">
+                          <p className="des__text">Thống kê</p>
+                          <hr className="hr--format" />
+                          <p>
+                            Đã tham gia{" "}
+                            {TimeFormatter(item.snippet.publishedAt)}
+                          </p>
+                          <hr className="hr--format" />
+                          <p>
+                            {ViewNumberFormatterDetails(
+                              item.statistics.viewCount
+                            )}{" "}
+                            lượt xem
+                          </p>
+                          <hr className="hr--format" />
+                        </div>
                       </div>
                     </TabPanel>
                   </div>

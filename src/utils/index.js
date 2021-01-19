@@ -21,8 +21,10 @@ export const TimePublishToNow = (timePublish) => {
   const fromTime = Date.parse(timePublish) / 1000;
   const toTime = Date.now() / 1000;
   const timeDifferent = (toTime - fromTime) / (3600 * 24);
-  if (timeDifferent < 7.0) {
+  if (timeDifferent < 1.0) {
     FormatTime = Math.floor(timeDifferent * 24) + " giờ trước";
+  } else if (timeDifferent >= 1 && timeDifferent < 7.0) {
+    FormatTime = Math.floor(timeDifferent) + " ngày trước";
   } else if (timeDifferent >= 7.0 && timeDifferent < 30.0) {
     FormatTime = Math.floor(timeDifferent / 7) + " tuần trước";
   } else if (timeDifferent / 30 >= 1.0 && timeDifferent / 30 < 12.0) {
