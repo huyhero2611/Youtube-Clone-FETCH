@@ -3,31 +3,42 @@ import VideoDetails from "../VideoDetails/VideoDetails";
 import "./VideoList.css";
 import Loading from "../../assets/loading7.gif";
 import LoadingHome from "../../assets/loading-home.png";
-import LoadingWatch from "../../assets/test-loading.png";
 import {
   getMostPopularVideos,
   searchRequest,
   getChannel,
   getVideoDetails,
   getRelatedToVideo,
-  getVideoLiveStreaming,
+  getMoreMostPopularVideos,
 } from "../../api/baseApi";
 //Skeleton
-import SkeletonHome from "../../components/Skeleton/SkeletonHome";
-import SkeletonResult from "../../components/Skeleton/SkeletonResult";
-import SkeletonWatch from "../../components/Skeleton/SkeletonWatch";
+import {
+  SkeletonHome,
+  SkeletonHomeLoading,
+} from "../../components/Skeleton/SkeletonHome";
+import {
+  SkeletonResult,
+  SkeletonResultLoading,
+} from "../../components/Skeleton/SkeletonResult";
+import {
+  SkeletonWatch,
+  SkeletonWatchLoading,
+} from "../../components/Skeleton/SkeletonWatch";
+//Scroll loading
+import InfiniteScroll from "react-infinite-scroll-component";
 
 function VideoList(props) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [nextPageToken, setNextPageToken] = useState("");
 
   useEffect(() => {
     let mounted = true;
     if (window.location.pathname.includes("result")) {
       searchRequest(props.inputSearch).then(async (res) => {
-        // console.log("result", res);
+        setNextPageToken(res.nextPageToken);
         new Promise(async (resolutionFunc, rejectionFunc) => {
-          for (let data of res) {
+          for (let data of res.items) {
             const channelId = data.snippet.channelId;
             let videoId;
             if (data.id.videoId !== undefined) {
@@ -50,8 +61,7 @@ function VideoList(props) {
             data.channelImage = channel[0].snippet.thumbnails.default.url;
             data.id = data.id.videoId;
           }
-          // console.log("show", res);
-          resolutionFunc(res);
+          resolutionFunc(res.items);
         }).then((data) => {
           if (mounted) {
             setLoading(false);
@@ -61,7 +71,6 @@ function VideoList(props) {
       });
     } else if (window.location.pathname.includes("watch")) {
       getRelatedToVideo(props.videoId).then((res) => {
-        // console.log("watch", res);
         new Promise(async (resolutionFunc, rejectionFunc) => {
           let array = [];
           for (let i = 0; i < res.length; i++) {
@@ -75,10 +84,6 @@ function VideoList(props) {
               if (video[0].liveStreamingDetails !== undefined) {
                 data.viewLiveCount =
                   video[0].liveStreamingDetails.concurrentViewers;
-                // console.log(
-                //   "aa",
-                //   video[0].liveStreamingDetails.concurrentViewers
-                // );
               } else {
                 data.viewLiveCount = -1;
               }
@@ -95,15 +100,14 @@ function VideoList(props) {
           if (mounted) {
             setLoading(false);
           }
-          // console.log("data watch", data);
           setData(data);
         });
       });
     } else {
       getMostPopularVideos().then(async (res) => {
-        // console.log("home", res);
+        setNextPageToken(res.nextPageToken);
         new Promise(async (resolutionFunc, rejectionFunc) => {
-          for (let data of res) {
+          for (let data of res.items) {
             data.duration = data.contentDetails.duration;
             const channelId = data.snippet.channelId;
             const videoId = data.id;
@@ -112,7 +116,7 @@ function VideoList(props) {
             const channel = await getChannel(channelId);
             data.channelImage = channel[0].snippet.thumbnails.default.url;
           }
-          resolutionFunc(res);
+          resolutionFunc(res.items);
         }).then((data) => {
           if (mounted) {
             setLoading(false);
@@ -126,29 +130,26 @@ function VideoList(props) {
       mounted = false;
     };
   }, [window.location.pathname]);
-  let listVideo = data.map((res) => {
-    return (
-      <VideoDetails
-        duration={res.duration}
-        viewCount={res.viewCount}
-        title={res.snippet.title}
-        image={res.snippet.thumbnails.medium.url}
-        // imageLarge={`https://i.ytimg.com/vi/${res.id}/maxresdefault.jpg`}
-        description={res.snippet.description}
-        publishedAt={res.snippet.publishedAt}
-        channelTitle={res.snippet.channelTitle}
-        videoId={res.id}
-        channelImage={res.channelImage}
-        liveBroadcastContent={res.snippet.liveBroadcastContent}
-        viewLiveCount={res.viewLiveCount}
-        channelId={res.snippet.channelId}
-        // IF result is Channel
-        isChannel={res.isChannel}
-        subChannel={res.subChannel}
-        videoCountChannel={res.videoCountChannel}
-      />
-    );
-  });
+
+  function nextPage() {
+    getMoreMostPopularVideos(nextPageToken).then((res) => {
+      setNextPageToken(res.nextPageToken);
+      new Promise(async (resolutionFunc, rejectionFunc) => {
+        for (let data of res.items) {
+          data.duration = data.contentDetails.duration;
+          const channelId = data.snippet.channelId;
+          const videoId = data.id;
+          const video = await getVideoDetails(videoId);
+          data.viewCount = video[0].statistics.viewCount;
+          const channel = await getChannel(channelId);
+          data.channelImage = channel[0].snippet.thumbnails.default.url;
+        }
+        resolutionFunc(res.items);
+      }).then((subdata) => {
+        setData([...data, ...subdata]);
+      });
+    });
+  }
 
   return (
     <div>
@@ -163,17 +164,53 @@ function VideoList(props) {
           )}
         </>
       ) : (
-        <div
-          className={
-            window.location.pathname.includes("result")
-              ? "videolist__result"
-              : window.location.pathname.includes("watch")
-              ? "videolist__watch"
-              : "videolist"
+        <InfiniteScroll
+          dataLength={data.length}
+          next={() => nextPage()}
+          hasMore={true}
+          loader={
+            window.location.pathname.includes("result") ? (
+              <SkeletonResultLoading />
+            ) : window.location.pathname.includes("watch") ? (
+              <SkeletonWatchLoading />
+            ) : (
+              <SkeletonHomeLoading />
+            )
           }
         >
-          {listVideo}
-        </div>
+          <div
+            className={
+              window.location.pathname.includes("result")
+                ? "videolist__result"
+                : window.location.pathname.includes("watch")
+                ? "videolist__watch"
+                : "videolist"
+            }
+          >
+            {data.map((res) => {
+              return (
+                <VideoDetails
+                  duration={res.duration}
+                  viewCount={res.viewCount}
+                  title={res.snippet.title}
+                  image={res.snippet.thumbnails.medium.url}
+                  description={res.snippet.description}
+                  publishedAt={res.snippet.publishedAt}
+                  channelTitle={res.snippet.channelTitle}
+                  videoId={res.id}
+                  channelImage={res.channelImage}
+                  liveBroadcastContent={res.snippet.liveBroadcastContent}
+                  viewLiveCount={res.viewLiveCount}
+                  channelId={res.snippet.channelId}
+                  // IF result is Channel
+                  isChannel={res.isChannel}
+                  subChannel={res.subChannel}
+                  videoCountChannel={res.videoCountChannel}
+                />
+              );
+            })}
+          </div>
+        </InfiniteScroll>
       )}
     </div>
   );

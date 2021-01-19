@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Grid, Avatar, Badge, isMuiElement } from "@material-ui/core";
-import { ThumbUp } from "@material-ui/icons";
+import { InsertInvitation, ThumbUp } from "@material-ui/icons";
 import VideoList from "../../components/VideoList/VideoList";
 import VideoPlayer from "react-player";
 import "./Watch.css";
@@ -11,6 +11,7 @@ import {
   getListComments,
   getChatLive,
   getPlayplistItems,
+  getMoreListComments,
 } from "../../api/baseApi";
 import {
   ViewNumberFormatterDetails,
@@ -19,6 +20,10 @@ import {
   TimePublishToNow,
 } from "../../utils/index";
 import * as queryString from "query-string";
+import InfiniteScroll from "react-infinite-scroll-component";
+// Skeleton
+import { SkeletonWatchCommentLoading } from "../../components/Skeleton/SkeletonWatch";
+
 function Watch(props) {
   const videoId = props.match.params.videoId;
   const [loading, setLoading] = useState(true);
@@ -30,21 +35,9 @@ function Watch(props) {
   const [playlist, setPlaylist] = useState([]);
   const [runInterval, setRunInterval] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [nextPageTokenComment, setNextPageTokenComment] = useState("");
 
   useEffect(async () => {
-    // const test = props.location;
-    // console.log("data", test);
-    // get PLAYLIST
-    const playlistId = queryString.parse(props.location.search);
-    if (playlistId.playlist !== undefined) {
-      const test = await getPlayplistItems(playlistId.playlist).then((res) => {
-        // console.log("res", res);
-        setPlaylist(res);
-      });
-      // console.log("test", test.length);
-    } else {
-      console.log("0");
-    }
     let mounted = true;
     // Video Details
     await getVideoDetails(videoId).then(async (res) => {
@@ -68,7 +61,6 @@ function Watch(props) {
             setLive(false);
           }
           const channel = await getChannel(data.snippet.channelId);
-          // console.log("watch channel", channel);
           data.channel = channel[0];
         }
         resolutionFunc(res);
@@ -81,11 +73,20 @@ function Watch(props) {
     });
     // Comments
     await getListComments(videoId).then((res) => {
+      setNextPageTokenComment(res.nextPageToken);
       if (mounted) {
         setLoading(false);
       }
-      setDataCmt(res);
+      setDataCmt(res.items);
     });
+    const playlistId = queryString.parse(props.location.search);
+    if (playlistId.playlist !== undefined) {
+      const test = await getPlayplistItems(playlistId.playlist).then((res) => {
+        setPlaylist(res);
+      });
+    } else {
+      console.log("0");
+    }
     return function cleanup() {
       mounted = false;
     };
@@ -102,6 +103,13 @@ function Watch(props) {
     );
   }, [isMobile]);
 
+  function nextPage() {
+    getMoreListComments(videoId, nextPageTokenComment).then((res) => {
+      setNextPageTokenComment(res.nextPageToken);
+      setDataCmt([...dataCmt, ...res.items]);
+    });
+  }
+
   return (
     <div>
       {loading ? (
@@ -114,7 +122,6 @@ function Watch(props) {
             xs={isMobile ? 12 : 9}
           >
             <div className="watch__video">
-              {/* <div className="watch__video--video"> */}
               <VideoPlayer
                 className="watch__video--video"
                 controls
@@ -123,9 +130,8 @@ function Watch(props) {
                 pip="true"
                 stopOnUnmount="false"
               ></VideoPlayer>
-              {/* </div> */}
               {data.map((item, index) => {
-                console.log("res", item);
+                // console.log("res", item);
                 const tags = item.snippet.tags;
                 return (
                   <div className="watch__video--info" key={index}>
@@ -232,53 +238,56 @@ function Watch(props) {
               })}
             </div>
             {live ? null : (
-              <div className="watch__comment">
-                {dataCmt.map((item) => {
-                  const temp = item.snippet.topLevelComment.snippet;
-                  return (
-                    <div style={{ display: "flex" }}>
-                      <Avatar
-                        alt="Remy Sharp"
-                        src={temp.authorProfileImageUrl}
-                      />
-                      <div
-                        style={{ paddingLeft: "20px", paddingBottom: "10px" }}
-                      >
-                        <p
-                          style={{
-                            fontSize: "115%",
-                            fontWeight: "500",
-                            display: "inline",
-                          }}
+              <InfiniteScroll
+                dataLength={dataCmt.length}
+                next={() => nextPage()}
+                hasMore={true}
+                loader={<SkeletonWatchCommentLoading />}
+              >
+                <div className="watch__comment">
+                  {dataCmt.map((item) => {
+                    const temp = item.snippet.topLevelComment.snippet;
+                    return (
+                      <div style={{ display: "flex" }}>
+                        <Avatar
+                          alt="Remy Sharp"
+                          src={temp.authorProfileImageUrl}
+                        />
+                        <div
+                          style={{ paddingLeft: "20px", paddingBottom: "10px" }}
                         >
-                          {temp.authorDisplayName}
-                        </p>
-                        <span
-                          style={{
-                            paddingLeft: "0.5em",
-                            color: "rgb(0,0,0,0.66)",
-                          }}
-                        >
-                          {TimePublishToNow(temp.updatedAt)}
-                        </span>
-                        {/* {temp.authorChannelUrl} */}
-                        <p>{temp.textOriginal}</p>
-                        <div className="comment--like">
-                          <ThumbUp
-                            // onClick={() => (temp.likeCount = temp.likeCount + 1)}
-                            style={{ color: "rgb(0,0,0,0.66)" }}
-                          />
-                          {temp.likeCount > 0 ? (
-                            <span style={{ paddingLeft: "5px" }}>
-                              {temp.likeCount}
-                            </span>
-                          ) : null}
+                          <p
+                            style={{
+                              fontSize: "115%",
+                              fontWeight: "500",
+                              display: "inline",
+                            }}
+                          >
+                            {temp.authorDisplayName}
+                          </p>
+                          <span
+                            style={{
+                              paddingLeft: "0.5em",
+                              color: "rgb(0,0,0,0.66)",
+                            }}
+                          >
+                            {TimePublishToNow(temp.updatedAt)}
+                          </span>
+                          <p>{temp.textOriginal}</p>
+                          <div className="comment--like">
+                            <ThumbUp style={{ color: "rgb(0,0,0,0.66)" }} />
+                            {temp.likeCount > 0 ? (
+                              <span style={{ paddingLeft: "5px" }}>
+                                {temp.likeCount}
+                              </span>
+                            ) : null}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
+              </InfiniteScroll>
             )}
           </Grid>
           <Grid

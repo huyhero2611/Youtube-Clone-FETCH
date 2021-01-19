@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const APP_KEY = "AIzaSyAe5StmTvlOGpufcLsRMcAM0sC2RexewgA";
+const APP_KEY = "AIzaSyDXces1UrddBMx7vReLTI3l7I709hzH5Ks";
 /*
 APP KEY
 huyhero2611     AIzaSyBvW9hL8LcRCGyTYUuLykpdjp064Vou0OY
@@ -21,12 +21,24 @@ export const getMostPopularVideos = () => {
   const result = YouTubeAPI.get("videos", {
     params: {
       part: "snippet,statistics, contentDetails",
-      maxResults: 48,
+      maxResults: 36,
       chart: "mostPopular",
       key: APP_KEY,
     },
-  }).then(({ data }) => data.items);
+  }).then(({ data }) => data);
+  return result;
+};
 
+export const getMoreMostPopularVideos = (pageToken) => {
+  const result = YouTubeAPI.get("videos", {
+    params: {
+      part: "snippet,statistics, contentDetails",
+      maxResults: 24,
+      chart: "mostPopular",
+      pageToken: pageToken,
+      key: APP_KEY,
+    },
+  }).then((data) => data.data);
   return result;
 };
 
@@ -66,7 +78,7 @@ export const searchRequest = (inputSearch) => {
         q: inputSearch,
         key: APP_KEY,
       },
-  }).then(({ data }) => data.items);
+  }).then(({ data }) => data);
   return result;
 };
 
@@ -87,7 +99,7 @@ export const getRelatedToVideo = (videoId) => {
   const result = YouTubeAPI.get("search", {
     params: {
       part: "snippet",
-      maxResults: 50,
+      maxResults: 30,
       relatedToVideoId: videoId,
       type: "video",
       key: APP_KEY,
@@ -102,10 +114,25 @@ export const getListComments = (videoId) => {
     params: {
       part: "snippet",
       videoId: videoId,
-      maxResults: 50,
+      maxResults: 30,
       key: APP_KEY,
     },
-  }).then((data) => data.data.items);
+  }).then((data) => data.data);
+  // console.log("comment", result);
+  return result;
+};
+
+export const getMoreListComments = (videoId, nextPage) => {
+  const result = YouTubeAPI.get("commentThreads", {
+    params: {
+      part: "snippet",
+      pageToken: nextPage,
+      videoId: videoId,
+      maxResults: 20,
+      key: APP_KEY,
+    },
+  }).then((data) => data.data);
+  // console.log("comment", result);
   return result;
 };
 
