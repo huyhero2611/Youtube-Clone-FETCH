@@ -1,6 +1,5 @@
-Note: snippet, statistics, contentDetails
-
-Issue:
-
-- responsible
-- watch video
+# Youtube Clone with ReactJS
+- Home page (show most popular videos)
+- Result page
+- Watch page 
+- Channel page
