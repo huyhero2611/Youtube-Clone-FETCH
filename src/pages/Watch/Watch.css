@@ -105,12 +105,13 @@
 
 /* Playlist */
 .watch__playlist {
-  display: block;
   border: 2px solid rgb(0, 0, 0, 0.22);
   padding: 15px;
   border-radius: 1%;
   box-shadow: 2px 1px 5px;
   margin-bottom: 10px;
+  max-height: 530px;
+  overflow: scroll;
 }
 
 .watch__playlist--title {

@@ -88,3 +88,25 @@ export function SkeletonWatchCommentLoading() {
     </div>
   );
 }
+
+export function SkeletonVideosPlaylistLoading() {
+  return (
+    <div>
+      {Array(1).fill().map(() => {
+        return (
+          <div style={{ display: "flex", paddingBottom: "10px" }}>
+            <Skeleton width={120} height={80}/>
+            <div style={{ paddingLeft: "10px" }}>
+              <p className="description--text watch__playlist--title">
+                <Skeleton width={270}/>
+              </p>
+              <p style={{ color: "rgb(0,0,0,0.66)" }}>
+                <Skeleton width={100}/>
+              </p>
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}

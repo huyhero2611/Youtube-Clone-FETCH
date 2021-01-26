@@ -9,9 +9,10 @@ import {
   getVideoDetails,
   getChannel,
   getListComments,
+  getMoreListComments,
   getChatLive,
   getPlayplistItems,
-  getMoreListComments,
+  getMorePlaylistItems
 } from "../../api/baseApi";
 import {
   ViewNumberFormatterDetails,
@@ -22,10 +23,9 @@ import {
 import * as queryString from "query-string";
 import InfiniteScroll from "react-infinite-scroll-component";
 // Skeleton
-import { SkeletonWatchCommentLoading } from "../../components/Skeleton/SkeletonWatch";
+import { SkeletonWatchCommentLoading, SkeletonVideosPlaylistLoading } from "../../components/Skeleton/SkeletonWatch";
 
 function Watch(props) {
-  const videoId = props.match.params.videoId;
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [dataCmt, setDataCmt] = useState([]);
@@ -36,6 +36,10 @@ function Watch(props) {
   const [runInterval, setRunInterval] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const [nextPageTokenComment, setNextPageTokenComment] = useState("");
+  const [nextPageTokenPlaylist, setNextPageTokenPlaylist] = useState("");
+
+  const videoId = props.match.params.videoId;
+  const playlistId = queryString.parse(props.location.search);
 
   useEffect(async () => {
     let mounted = true;
@@ -79,10 +83,10 @@ function Watch(props) {
       }
       setDataCmt(res.items);
     });
-    const playlistId = queryString.parse(props.location.search);
     if (playlistId.playlist !== undefined) {
       const test = await getPlayplistItems(playlistId.playlist).then((res) => {
-        setPlaylist(res);
+        setNextPageTokenPlaylist(res.nextPageToken);
+        setPlaylist(res.items);
       });
     } else {
       console.log("0");
@@ -102,6 +106,13 @@ function Watch(props) {
       false
     );
   }, [isMobile]);
+
+  function nextPagePlaylist() {
+    getMorePlaylistItems(playlistId.playlist, nextPageTokenPlaylist).then((res) => {
+      setNextPageTokenPlaylist(res.nextPageToken);
+      setPlaylist([...playlist, ...res.items])
+    })
+  }
 
   function nextPage() {
     getMoreListComments(videoId, nextPageTokenComment).then((res) => {
@@ -144,7 +155,6 @@ function Watch(props) {
                     `}
                       </div>
                     ) : null}
-
                     <div className="info__video">
                       <p style={{ fontSize: "20px", marginBottom: "10px" }}>
                         {item.snippet.title}
@@ -327,34 +337,43 @@ function Watch(props) {
             {/* is playlist */}
             {playlist.length > 0 ? (
               <div className="watch__playlist">
-                <p style={{ fontSize: "20px", paddingBottom: "10px" }}>
-                  Playlist
-                </p>
-                {playlist.map((itemPlaylist) => {
-                  return (
-                    <Link
-                      className="link"
-                      to={{
-                        pathname: `/watch/${itemPlaylist.snippet.resourceId.videoId}`,
-                        search: `?playlist=${itemPlaylist.snippet.playlistId}`,
-                      }}
-                    >
-                      <div style={{ display: "flex", paddingBottom: "10px" }}>
-                        <img
-                          src={itemPlaylist.snippet.thumbnails.default.url}
-                        />
-                        <div style={{ paddingLeft: "10px" }}>
-                          <p className="description--text watch__playlist--title">
-                            {itemPlaylist.snippet.title}
-                          </p>
-                          <p style={{ color: "rgb(0,0,0,0.66)" }}>
-                            {itemPlaylist.snippet.channelTitle}
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
-                  );
-                })}
+                <InfiniteScroll
+                  dataLength={playlist.length}
+                  next={() => nextPagePlaylist()}
+                  hasMore={true}
+                  loader={<SkeletonVideosPlaylistLoading />}
+                >
+                  <div style={{display: "block"}}>
+                    <p style={{ fontSize: "20px", paddingBottom: "10px" }}>
+                      Playlist
+                    </p>
+                    {playlist.map((itemPlaylist) => {
+                      return (
+                        <Link
+                          className="link"
+                          to={{
+                            pathname: `/watch/${itemPlaylist.snippet.resourceId.videoId}`,
+                            search: `?playlist=${itemPlaylist.snippet.playlistId}`,
+                          }}
+                        >
+                          <div style={{ display: "flex", paddingBottom: "10px" }}>
+                            <img
+                              src={itemPlaylist.snippet.thumbnails.default.url}
+                            />
+                            <div style={{ paddingLeft: "10px" }}>
+                              <p className="description--text watch__playlist--title">
+                                {itemPlaylist.snippet.title}
+                              </p>
+                              <p style={{ color: "rgb(0,0,0,0.66)" }}>
+                                {itemPlaylist.snippet.channelTitle}
+                              </p>
+                            </div>
+                          </div>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </InfiniteScroll>
               </div>
             ) : null}
             <div className="watch__videos--next">
