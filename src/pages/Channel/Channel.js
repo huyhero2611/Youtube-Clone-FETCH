@@ -18,7 +18,7 @@ import {
   getChannel,
   getMoreVideosChannel,
   getPlaylists,
-  getPlayplistItems,
+  getPlaylistItems,
   getVideoDetails,
   getVideosChannel,
 } from "../../api/baseApi";
@@ -265,15 +265,16 @@ export default function Channel(props) {
                     <TabPanel value={value} index={1}>
                       <div className="channel__playlists">
                         {dataPlaylist.map((itemPlaylist) => {
+                          // console.log("haha", dataPlaylist);
                           const watchPlaylistItem = () => {
-                            const playlistItem = getPlayplistItems(
+                            const playlistItem = getPlaylistItems(
                               itemPlaylist.id
                             ).then((res) => {
                               history.push({
-                                pathname: `/watch/${res[0].snippet.resourceId.videoId}`,
+                                pathname: `/watch/${res.items[0].snippet.resourceId.videoId}`,
                                 search: `?playlist=${itemPlaylist.id}`,
                                 state: {
-                                  data: res,
+                                  data: res.items,
                                 },
                               });
                             });

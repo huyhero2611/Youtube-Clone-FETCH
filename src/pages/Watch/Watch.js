@@ -11,7 +11,7 @@ import {
   getListComments,
   getMoreListComments,
   getChatLive,
-  getPlayplistItems,
+  getPlaylistItems,
   getMorePlaylistItems
 } from "../../api/baseApi";
 import {
@@ -84,9 +84,11 @@ function Watch(props) {
       setDataCmt(res.items);
     });
     if (playlistId.playlist !== undefined) {
-      const test = await getPlayplistItems(playlistId.playlist).then((res) => {
-        setNextPageTokenPlaylist(res.nextPageToken);
+      const test = await getPlaylistItems(playlistId.playlist).then((res) => {
         setPlaylist(res.items);
+        if (res.nextPageToken !== undefined) {
+          setNextPageTokenPlaylist(res.nextPageToken);
+        }
       });
     } else {
       console.log("0");
@@ -108,10 +110,10 @@ function Watch(props) {
   }, [isMobile]);
 
   function nextPagePlaylist() {
-    getMorePlaylistItems(playlistId.playlist, nextPageTokenPlaylist).then((res) => {
-      setNextPageTokenPlaylist(res.nextPageToken);
-      setPlaylist([...playlist, ...res.items])
-    })
+      getMorePlaylistItems(playlistId.playlist, nextPageTokenPlaylist).then((res) => {
+        setNextPageTokenPlaylist(res.nextPageToken);
+        setPlaylist([...playlist, ...res.items])
+      })
   }
 
   function nextPage() {
@@ -339,9 +341,9 @@ function Watch(props) {
               <div className="watch__playlist">
                 <InfiniteScroll
                   dataLength={playlist.length}
+                  hasMore={nextPageTokenPlaylist == "" ? false : true}
                   next={() => nextPagePlaylist()}
-                  hasMore={true}
-                  loader={<SkeletonVideosPlaylistLoading />}
+                  loader={nextPageTokenPlaylist == "" ? null : <SkeletonVideosPlaylistLoading />}
                 >
                   <div style={{display: "block"}}>
                     <p style={{ fontSize: "20px", paddingBottom: "10px" }}>

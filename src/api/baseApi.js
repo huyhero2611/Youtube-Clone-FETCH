@@ -1,16 +1,19 @@
 import axios from "axios";
 
-const APP_KEY = "AIzaSyAe5StmTvlOGpufcLsRMcAM0sC2RexewgA";
+const APP_KEY = "AIzaSyDXces1UrddBMx7vReLTI3l7I709hzH5Ks";
 /*
 APP KEY
 AIzaSyBvW9hL8LcRCGyTYUuLykpdjp064Vou0OY
-AIzaSyB39Fa8R-tMxxsbfwHf0C7Hkc0xfyOwkiY
 AIzaSyDXces1UrddBMx7vReLTI3l7I709hzH5Ks
 AIzaSyAe5StmTvlOGpufcLsRMcAM0sC2RexewgA
 AIzaSyCp8W6kiBN4RtLPOtw1zn_XNfcApeF5zu8
 AIzaSyAVACMSBQlsiECbg0LGwmh3XXsZLK7I7SY
 AIzaSyArga-Cyq0TvXLfiuQP5U4_ot7PKPpVwhM
 */
+
+// switch api key
+// AIzaSyB39Fa8R-tMxxsbfwHf0C7Hkc0xfyOwkiY
+
 
 // AXIOS INSTANCE
 export const YouTubeAPI = axios.create({
@@ -147,7 +150,7 @@ export const getPlaylists = (channelId) => {
 };
 
 // GET PLAYLIST ITEMS
-export const getPlayplistItems = (playlistId) => {
+export const getPlaylistItems = (playlistId) => {
   const result = YouTubeAPI.get("playlistItems", {
     params: {
       part: "snippet",
