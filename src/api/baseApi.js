@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const APP_KEY = "AIzaSyBvW9hL8LcRCGyTYUuLykpdjp064Vou0OY";
+const APP_KEY = "AIzaSyAe5StmTvlOGpufcLsRMcAM0sC2RexewgA";
 /*
 APP KEY
 AIzaSyBvW9hL8LcRCGyTYUuLykpdjp064Vou0OY
