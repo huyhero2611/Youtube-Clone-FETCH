@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, memo } from "react";
 import {
   Card,
   CardContent,
@@ -236,4 +236,4 @@ function VideoDetails(props) {
   );
 }
 
-export default VideoDetails;
+export default memo(VideoDetails);

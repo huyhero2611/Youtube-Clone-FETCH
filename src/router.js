@@ -1,8 +1,14 @@
-import Home from "./pages/Home/Home";
-import Result from "./pages/Result/Result";
-import Watch from "./pages/Watch/Watch";
-import PlayVideo from "./components/PlayVideo/PlayVideo";
-import Channel from "./pages/Channel/Channel";
+// import Home from "./pages/Home/Home";
+// import Result from "./pages/Result/Result";
+// import Watch from "./pages/Watch/Watch";
+// import Channel from "./pages/Channel/Channel";
+
+import React, { lazy } from "react";
+
+const Home = lazy(() => import("./pages/Home/Home"));
+const Result = lazy(() => import("./pages/Result/Result"));
+const Watch = lazy(() => import("./pages/Watch/Watch"));
+const Channel = lazy(() => import("./pages/Channel/Channel"));
 
 const routes = [
   {

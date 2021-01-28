@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, memo, useEffect } from "react";
 import VideoList from "../../components/VideoList/VideoList";
 import { Grid } from "@material-ui/core";
 import NavBar from "../../components/NavBar/NavBar";
@@ -25,4 +25,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default memo(Home);

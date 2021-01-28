@@ -14,7 +14,6 @@ AIzaSyArga-Cyq0TvXLfiuQP5U4_ot7PKPpVwhM
 // switch api key
 // AIzaSyB39Fa8R-tMxxsbfwHf0C7Hkc0xfyOwkiY
 
-
 // AXIOS INSTANCE
 export const YouTubeAPI = axios.create({
   baseURL: "https://www.googleapis.com/youtube/v3",
@@ -25,11 +24,13 @@ export const getMostPopularVideos = () => {
   const result = YouTubeAPI.get("videos", {
     params: {
       part: "snippet,statistics, contentDetails",
-      maxResults: 48,
+      maxResults: 12,
       chart: "mostPopular",
       key: APP_KEY,
     },
-  }).then(({ data }) => data);
+  }).then((data) => data.data);
+
+  // console.log("most", result);
   return result;
 };
 
@@ -37,7 +38,7 @@ export const getMoreMostPopularVideos = (pageToken) => {
   const result = YouTubeAPI.get("videos", {
     params: {
       part: "snippet,statistics, contentDetails",
-      maxResults: 36,
+      maxResults: 8,
       chart: "mostPopular",
       pageToken: pageToken,
       key: APP_KEY,
@@ -61,13 +62,26 @@ export const getVideoDetails = (videoId) => {
 // SEARCH
 export const searchRequest = (inputSearch) => {
   const result = YouTubeAPI.get("search", {
-    params:
-      {
-        part: "snippet",
-        maxResults: 50,
-        q: inputSearch,
-        key: APP_KEY,
-      },
+    params: {
+      part: "snippet",
+      maxResults: 5,
+      q: inputSearch,
+      key: APP_KEY,
+    },
+  }).then(({ data }) => data);
+  console.log("result", result);
+  return result;
+};
+
+export const searchMoreRequest = (inputSearch, nextPage) => {
+  const result = YouTubeAPI.get("search", {
+    params: {
+      part: "snippet",
+      maxResults: 5,
+      q: inputSearch,
+      pageToken: nextPage,
+      key: APP_KEY,
+    },
   }).then(({ data }) => data);
   return result;
 };
@@ -89,7 +103,7 @@ export const getRelatedToVideo = (videoId) => {
   const result = YouTubeAPI.get("search", {
     params: {
       part: "snippet",
-      maxResults: 30,
+      maxResults: 10,
       relatedToVideoId: videoId,
       type: "video",
       key: APP_KEY,
@@ -104,7 +118,7 @@ export const getListComments = (videoId) => {
     params: {
       part: "snippet",
       videoId: videoId,
-      maxResults: 30,
+      maxResults: 10,
       key: APP_KEY,
     },
   }).then((data) => data.data);
@@ -154,7 +168,7 @@ export const getPlaylistItems = (playlistId) => {
   const result = YouTubeAPI.get("playlistItems", {
     params: {
       part: "snippet",
-      maxResults: 50,
+      maxResults: 10,
       playlistId: playlistId,
       key: APP_KEY,
     },
@@ -166,20 +180,20 @@ export const getMorePlaylistItems = (playlistId, nextPage) => {
   const result = YouTubeAPI.get("playlistItems", {
     params: {
       part: "snippet",
-      maxResults: 50,
+      maxResults: 10,
       pageToken: nextPage,
       playlistId: playlistId,
-      key: APP_KEY
-    }
+      key: APP_KEY,
+    },
   }).then((data) => data.data);
   return result;
-}
+};
 // GET VIDEO OF CHANNEL
 export const getVideosChannel = (channelId) => {
   const result = YouTubeAPI.get("search", {
     params: {
       part: "snippet",
-      maxResults: 30,
+      maxResults: 14,
       channelId: channelId,
       key: APP_KEY,
     },
@@ -191,7 +205,7 @@ export const getMoreVideosChannel = (channelId, nextPage) => {
   const result = YouTubeAPI.get("search", {
     params: {
       part: "snippet",
-      maxResults: 20,
+      maxResults: 12,
       pageToken: nextPage,
       channelId: channelId,
       key: APP_KEY,

@@ -61,3 +61,17 @@ export const DurationVideoFormatter = (duration) => {
   }
   return FormatTime;
 };
+
+export const UrlLocation = (home = false) => {
+  if (window.location.pathname.includes("result")) {
+    return "result";
+  } else if (window.location.pathname.includes("watch")) {
+    return "watch";
+  } else if (window.location.pathname.includes("channel")) {
+    return "channel";
+  } else if (home) {
+    return "home";
+  } else {
+    return null;
+  }
+};

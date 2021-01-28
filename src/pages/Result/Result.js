@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, memo, useState } from "react";
 import { searchRequest, getVideoDetails } from "../../api/baseApi";
 import { Grid } from "@material-ui/core";
 import Navbar from "../../components/NavBar/NavBar";
@@ -42,4 +42,4 @@ function Result(props) {
   );
 }
 
-export default Result;
+export default memo(Result);

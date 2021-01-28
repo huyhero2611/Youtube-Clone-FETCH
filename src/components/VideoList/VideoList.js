@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, memo } from "react";
 import VideoDetails from "../VideoDetails/VideoDetails";
+import { FilterList } from "@material-ui/icons";
 import "./VideoList.css";
 import {
   getMostPopularVideos,
@@ -214,4 +215,4 @@ function VideoList(props) {
   );
 }
 
-export default VideoList;
+export default memo(VideoList);

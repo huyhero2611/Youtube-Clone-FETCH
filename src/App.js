@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import "./App.css";
 import routes from "./router";
 import {
@@ -39,7 +39,9 @@ function App(props) {
             <Header setShowNavbar={setShowNavbar} />
           </Grid>
           <Grid item xs={12} className="lg-12 md-12 sm-12">
-            <Switch>{RoutesManagement()}</Switch>
+            <Suspense fallback={<p>Loading...</p>}>
+              <Switch>{RoutesManagement()}</Switch>
+            </Suspense>
           </Grid>
         </Grid>
       </Router>
