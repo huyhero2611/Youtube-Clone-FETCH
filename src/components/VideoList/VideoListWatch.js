@@ -1,39 +1,43 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./VideoList.css";
-import {
-  SkeletonResult,
-  SkeletonResultLoading,
-} from "../../components/Skeleton/SkeletonResult";
+import { SkeletonWatch, SkeletonWatchLoading } from "../Skeleton/SkeletonWatch";
 import InfiniteScroll from "react-infinite-scroll-component";
-import VideoDetails from "../VideoDetails/VideoDetails";
 import {
   getAPI,
   APP_KEY,
   getVideoDetails,
   getChannel,
 } from "../../services/network";
-function VideoListResult(props) {
+import VideoDetails from "../VideoDetails/VideoDetails";
+
+function VideoListWatch(props) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [nextPageToken, setNextPageToken] = useState("");
+
+  // console.log("prop videoID", props.videoId);
 
   useEffect(() => {
     getAPI("search", {
       params: {
         part: "snippet",
-        maxResults: 5,
-        q: props.inputSearch,
+        maxResults: 10,
+        relatedToVideoId: props.videoId,
+        type: "video",
         key: APP_KEY,
       },
-    }).then(async (res) => {
-      setNextPageToken(res.nextPageToken);
+    }).then((res1) => {
+      // console.log("res", res1);
+      setNextPageToken(res1.nextPageToken);
       new Promise(async (resolutionFunc, rejectionFunc) => {
-        for (let data of res.items) {
-          // console.log("data", data);
-          const channelId = data.snippet.channelId;
-          let videoId;
-          if (data.id.videoId !== undefined) {
-            videoId = data.id.videoId;
+        let res = res1.items;
+        for (let i = 0; i < res.length; i++) {
+          if (res[i].snippet === undefined) {
+            res.splice(res.indexOf(res[i]), 1);
+            i--;
+          } else {
+            const channelId = res[i].snippet.channelId;
+            const videoId = res[i].id.videoId;
             const video = await getVideoDetails(videoId);
             if (video[0].liveStreamingDetails !== undefined) {
               data.viewLiveCount =
@@ -42,42 +46,45 @@ function VideoListResult(props) {
               data.viewLiveCount = -1;
             }
             data.duration = video[0].contentDetails.duration;
-            data.viewCount = video[0].statistics.viewCount;
-          } else {
-            data.isChannel = true;
+            res[i].duration = video[0].contentDetails.duration;
+            res[i].viewCount = video[0].statistics.viewCount;
+            const channel = await getChannel(channelId);
+            res[i].channelImage = channel[0].snippet.thumbnails.default.url;
+            res[i].id = res[i].id.videoId;
           }
-          const channel = await getChannel(channelId);
-          data.subChannel = channel[0].statistics.subscriberCount;
-          data.videoCountChannel = channel[0].statistics.videoCount;
-          data.channelImage = channel[0].snippet.thumbnails.default.url;
-          data.id = data.id.videoId;
         }
-        resolutionFunc(res.items);
+        resolutionFunc(res);
       }).then((data) => {
         setLoading(false);
+
         setData(data);
       });
     });
   }, [window.location.pathname]);
 
   function nextPage() {
+    // console.log("toke", nextPageToken);
     getAPI("search", {
       params: {
         part: "snippet",
-        maxResults: 5,
-        q: props.inputSearch,
+        maxResults: 4,
+        relatedToVideoId: props.videoId,
+        type: "video",
         pageToken: nextPageToken,
         key: APP_KEY,
       },
-    }).then(async (res) => {
-      // console.log("more", res);
-      setNextPageToken(res.nextPageToken);
-      new Promise(async (resolution, rejection) => {
-        for (let data of res.items) {
-          const channelId = data.snippet.channelId;
-          let videoId;
-          if (data.id.videoId !== undefined) {
-            videoId = data.id.videoId;
+    }).then((res1) => {
+      // console.log("res", res1);
+      setNextPageToken(res1.nextPageToken);
+      new Promise(async (resolutionFunc, rejectionFunc) => {
+        let res = res1.items;
+        for (let i = 0; i < res.length; i++) {
+          if (res[i].snippet === undefined) {
+            res.splice(res.indexOf(res[i]), 1);
+            i--;
+          } else {
+            const channelId = res[i].snippet.channelId;
+            const videoId = res[i].id.videoId;
             const video = await getVideoDetails(videoId);
             if (video[0].liveStreamingDetails !== undefined) {
               data.viewLiveCount =
@@ -86,19 +93,15 @@ function VideoListResult(props) {
               data.viewLiveCount = -1;
             }
             data.duration = video[0].contentDetails.duration;
-            data.viewCount = video[0].statistics.viewCount;
-          } else {
-            data.isChannel = true;
+            res[i].duration = video[0].contentDetails.duration;
+            res[i].viewCount = video[0].statistics.viewCount;
+            const channel = await getChannel(channelId);
+            res[i].channelImage = channel[0].snippet.thumbnails.default.url;
+            res[i].id = res[i].id.videoId;
           }
-          const channel = await getChannel(channelId);
-          data.subChannel = channel[0].statistics.subscriberCount;
-          data.videoCountChannel = channel[0].statistics.videoCount;
-          data.channelImage = channel[0].snippet.thumbnails.default.url;
-          data.id = data.id.videoId;
         }
-        resolution(res.items);
+        resolutionFunc(res);
       }).then((data1) => {
-        setLoading(false);
         setData([...data, ...data1]);
       });
     });
@@ -107,18 +110,19 @@ function VideoListResult(props) {
   return (
     <div>
       {loading ? (
-        <SkeletonResult />
+        <SkeletonWatch />
       ) : (
         <InfiniteScroll
           dataLength={data.length}
           next={() => nextPage()}
           hasMore={true}
-          loader={<SkeletonResultLoading />}
+          loader={<SkeletonWatchLoading />}
         >
-          <div className="videolist__result">
+          <div className="videolist__watch">
             {data.map((res) => {
               return (
                 <VideoDetails
+                  videoId={res.id}
                   duration={res.duration}
                   viewCount={res.viewCount}
                   title={res.snippet.title}
@@ -130,10 +134,6 @@ function VideoListResult(props) {
                   liveBroadcastContent={res.snippet.liveBroadcastContent}
                   viewLiveCount={res.viewLiveCount}
                   channelId={res.snippet.channelId}
-                  isChannel={res.isChannel}
-                  subChannel={res.subChannel}
-                  videoCountChannel={res.videoCountChannel}
-                  videoId={res.id}
                 />
               );
             })}
@@ -144,4 +144,4 @@ function VideoListResult(props) {
   );
 }
 
-export default VideoListResult;
+export default VideoListWatch;

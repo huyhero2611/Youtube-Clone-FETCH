@@ -2,18 +2,21 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Grid, Avatar, Badge, isMuiElement } from "@material-ui/core";
 import { InsertInvitation, ThumbUp } from "@material-ui/icons";
-import VideoList from "../../components/VideoList/VideoList";
+import VideoListWatch from "../../components/VideoList/VideoListWatch";
 import VideoPlayer from "react-player";
 import "./Watch.css";
+// import {
+//   getListComments,
+//   getChatLive,
+//   getPlaylistItems,
+//   getMorePlaylistItems,
+// } from "../../api/baseApi";
 import {
+  getAPI,
+  APP_KEY,
   getVideoDetails,
   getChannel,
-  getListComments,
-  getMoreListComments,
-  getChatLive,
-  getPlaylistItems,
-  getMorePlaylistItems
-} from "../../api/baseApi";
+} from "../../services/network";
 import {
   ViewNumberFormatterDetails,
   TimeFormatter,
@@ -23,7 +26,10 @@ import {
 import * as queryString from "query-string";
 import InfiniteScroll from "react-infinite-scroll-component";
 // Skeleton
-import { SkeletonWatchCommentLoading, SkeletonVideosPlaylistLoading } from "../../components/Skeleton/SkeletonWatch";
+import {
+  SkeletonWatchCommentLoading,
+  SkeletonVideosPlaylistLoading,
+} from "../../components/Skeleton/SkeletonWatch";
 
 function Watch(props) {
   const [loading, setLoading] = useState(true);
@@ -33,10 +39,11 @@ function Watch(props) {
   const [listChatLive, setListChatLive] = useState([]);
   const [live, setLive] = useState(false);
   const [playlist, setPlaylist] = useState([]);
-  const [runInterval, setRunInterval] = useState(null);
+  // const [runInterval, setRunInterval] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const [nextPageTokenComment, setNextPageTokenComment] = useState("");
   const [nextPageTokenPlaylist, setNextPageTokenPlaylist] = useState("");
+  const [nextPageTokenChatLive, setNextPageTokenChatLive] = useState("");
 
   const videoId = props.match.params.videoId;
   const playlistId = queryString.parse(props.location.search);
@@ -51,18 +58,47 @@ function Watch(props) {
             data.liveStreamingDetails !== undefined &&
             data.liveStreamingDetails.concurrentViewers !== undefined
           ) {
+            //get chat live
             setLive(true);
-            setRunInterval(
-              setInterval(async () => {
-                const chatlive = await getChatLive(
-                  data.liveStreamingDetails.activeLiveChatId
-                );
-                setListChatLive(chatlive);
-              }, 1000)
-            );
+            const chatlive = await getAPI("liveChat/messages", {
+              params: {
+                part: "snippet, authorDetails",
+                liveChatId: data.liveStreamingDetails.activeLiveChatId,
+                maxResults: 20,
+                key: APP_KEY,
+              },
+            });
+            nextPageTokenChatLive(chatlive.nextPageToken);
+            setListChatLive(chatlive.items);
+            // console.log("test", chatlive);
+            // setRunInterval(
+            //   setInterval(async () => {
+            //     const chatlive = await getChatLive(
+            //       data.liveStreamingDetails.activeLiveChatId
+            //     );
+            //     // console.log("haha");
+            //     setListChatLive(chatlive);
+            //   }, 10000)
+            // );
           } else {
-            runInterval && clearInterval(runInterval);
+            // runInterval && clearInterval(runInterval);
             setLive(false);
+            // get Comments
+            await getAPI("commentThreads", {
+              params: {
+                part: "snippet",
+                videoId: videoId,
+                maxResults: 5,
+                key: APP_KEY,
+              },
+            }).then((res) => {
+              console.log("comments", res);
+              setNextPageTokenComment(res.nextPageToken);
+              if (mounted) {
+                setLoading(false);
+              }
+              setDataCmt(res.items);
+            });
           }
           const channel = await getChannel(data.snippet.channelId);
           data.channel = channel[0];
@@ -75,16 +111,17 @@ function Watch(props) {
         setData(data);
       });
     });
-    // Comments
-    await getListComments(videoId).then((res) => {
-      setNextPageTokenComment(res.nextPageToken);
-      if (mounted) {
-        setLoading(false);
-      }
-      setDataCmt(res.items);
-    });
+
+    // Playlist
     if (playlistId.playlist !== undefined) {
-      const test = await getPlaylistItems(playlistId.playlist).then((res) => {
+      await getAPI("playlistItems", {
+        params: {
+          part: "snippet",
+          maxResults: 10,
+          playlistId: playlistId.playlist,
+          key: APP_KEY,
+        },
+      }).then((res) => {
         setPlaylist(res.items);
         if (res.nextPageToken !== undefined) {
           setNextPageTokenPlaylist(res.nextPageToken);
@@ -109,18 +146,53 @@ function Watch(props) {
     );
   }, [isMobile]);
 
-  function nextPagePlaylist() {
-      getMorePlaylistItems(playlistId.playlist, nextPageTokenPlaylist).then((res) => {
-        setNextPageTokenPlaylist(res.nextPageToken);
-        setPlaylist([...playlist, ...res.items])
-      })
+  // show chat livestream
+  // useEffect(async () => {
+  //   console.log("chatliveId", listChatLive);
+  //   const showMoreChatLive = await getAPI("liveChat/messages", {
+  //     params: {
+  //       part: "snippet, authorDetails",
+  //       liveChatId: data.liveStreamingDetails.activeLiveChatId,
+  //       maxResults: 20,
+  //       key: APP_KEY,
+  //     },
+  //   });
+  //   nextPageTokenChatLive(showMoreChatLive.nextPageToken);
+  //   setListChatLive([...listChatLive, ...showMoreChatLive.items]);
+  // }, [nextPageTokenChatLive]);
+
+  async function nextPagePlaylist() {
+    const getMorePlaylistItems = await getAPI("playlistItems", {
+      params: {
+        part: "snippet",
+        maxResults: 5,
+        pageToken: nextPageTokenPlaylist,
+        playlistId: playlistId.playlist,
+        key: APP_KEY,
+      },
+    });
+    setNextPageTokenPlaylist(getMorePlaylistItems.nextPageToken);
+    setPlaylist([...playlist, ...getMorePlaylistItems.items]);
+    // getMorePlaylistItems(playlistId.playlist, nextPageTokenPlaylist).then(
+    //   (res) => {
+    //     setNextPageTokenPlaylist(res.nextPageToken);
+    //     setPlaylist([...playlist, ...res.items]);
+    //   }
+    // );
   }
 
-  function nextPage() {
-    getMoreListComments(videoId, nextPageTokenComment).then((res) => {
-      setNextPageTokenComment(res.nextPageToken);
-      setDataCmt([...dataCmt, ...res.items]);
+  async function nextPage() {
+    const getMoreListComments = await getAPI("commentThreads", {
+      params: {
+        part: "snippet",
+        pageToken: nextPageTokenComment,
+        videoId: videoId,
+        maxResults: 5,
+        key: APP_KEY,
+      },
     });
+    setNextPageTokenComment(getMoreListComments.nextPageToken);
+    setDataCmt([...dataCmt, ...getMoreListComments.items]);
   }
 
   return (
@@ -343,9 +415,13 @@ function Watch(props) {
                   dataLength={playlist.length}
                   hasMore={nextPageTokenPlaylist == "" ? false : true}
                   next={() => nextPagePlaylist()}
-                  loader={nextPageTokenPlaylist == "" ? null : <SkeletonVideosPlaylistLoading />}
+                  loader={
+                    nextPageTokenPlaylist == "" ? null : (
+                      <SkeletonVideosPlaylistLoading />
+                    )
+                  }
                 >
-                  <div style={{display: "block"}}>
+                  <div style={{ display: "block" }}>
                     <p style={{ fontSize: "20px", paddingBottom: "10px" }}>
                       Playlist
                     </p>
@@ -358,7 +434,9 @@ function Watch(props) {
                             search: `?playlist=${itemPlaylist.snippet.playlistId}`,
                           }}
                         >
-                          <div style={{ display: "flex", paddingBottom: "10px" }}>
+                          <div
+                            style={{ display: "flex", paddingBottom: "10px" }}
+                          >
                             <img
                               src={itemPlaylist.snippet.thumbnails.default.url}
                             />
@@ -382,7 +460,7 @@ function Watch(props) {
               <p style={{ fontSize: "20px" }}>Tiếp theo</p>
             </div>
             <div className="watch__videos--list">
-              <VideoList videoId={videoId} />
+              <VideoListWatch videoId={videoId} />
             </div>
           </Grid>
         </div>

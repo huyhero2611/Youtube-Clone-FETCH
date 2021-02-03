@@ -4,6 +4,7 @@ import { Grid } from "@material-ui/core";
 import Navbar from "../../components/NavBar/NavBar";
 import VideoList from "../../components/VideoList/VideoList";
 import "./Result.css";
+import VideoListResult from "../../components/VideoList/VideoListResult";
 
 function Result(props) {
   const inputSearch = props.match.params.inputSearch;
@@ -35,7 +36,7 @@ function Result(props) {
           justify="center"
           style={{ padding: "10px" }}
         >
-          <VideoList inputSearch={inputSearch} />
+          <VideoListResult inputSearch={inputSearch} />
         </Grid>
       </Grid>
     </div>

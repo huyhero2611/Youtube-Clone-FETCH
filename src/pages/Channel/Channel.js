@@ -15,13 +15,19 @@ import PropTypes from "prop-types";
 
 import NavBar from "../../components/NavBar/NavBar";
 import {
-  getChannel,
+  // getChannel,
   getMoreVideosChannel,
   getPlaylists,
   getPlaylistItems,
   getVideoDetails,
   getVideosChannel,
 } from "../../api/baseApi";
+import {
+  getAPI,
+  APP_KEY,
+  // getVideoDetails,
+  getChannel,
+} from "../../services/network";
 import {
   DurationVideoFormatter,
   TimePublishToNow,
@@ -95,10 +101,16 @@ export default function Channel(props) {
   const history = useHistory();
 
   useEffect(async () => {
-    await getChannel(channelId).then((res) => {
-      setData(res);
-    });
-    await getVideosChannel(channelId).then((res) => {
+    const channelData = await getChannel(channelId);
+    setData(channelData);
+    await getAPI("search", {
+      params: {
+        part: "snippet",
+        maxResults: 12,
+        channelId: channelId,
+        key: APP_KEY,
+      },
+    }).then((res) => {
       setNextPageVideosChannel(res.nextPageToken);
       new Promise(async (resolutionFunc, rejectionFunc) => {
         for (let data of res.items) {
@@ -118,9 +130,16 @@ export default function Channel(props) {
         setVideosChannel(data);
       });
     });
-    await getPlaylists(channelId).then((res) => {
-      setDataPlaylist(res);
+    const playlists = await getAPI("playlists", {
+      params: {
+        part: "snippet, contentDetails",
+        channelId: channelId,
+        maxResults: 50,
+        key: APP_KEY,
+      },
     });
+    // console.log("playlist", playlists);
+    setDataPlaylist(playlists.items);
   }, []);
 
   function nextPage() {
@@ -265,7 +284,6 @@ export default function Channel(props) {
                     <TabPanel value={value} index={1}>
                       <div className="channel__playlists">
                         {dataPlaylist.map((itemPlaylist) => {
-                          // console.log("haha", dataPlaylist);
                           const watchPlaylistItem = () => {
                             const playlistItem = getPlaylistItems(
                               itemPlaylist.id

@@ -5,7 +5,7 @@ import "./Skeletons.css";
 export function SkeletonHome(props) {
   return (
     <div className="skeleton skeleton__home">
-      {Array(50)
+      {Array(12)
         .fill()
         .map((item) => {
           return (

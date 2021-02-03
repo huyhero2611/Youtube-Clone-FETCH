@@ -1,14 +1,14 @@
-// import Home from "./pages/Home/Home";
-// import Result from "./pages/Result/Result";
-// import Watch from "./pages/Watch/Watch";
-// import Channel from "./pages/Channel/Channel";
+import Home from "./pages/Home/Home";
+import Result from "./pages/Result/Result";
+import Watch from "./pages/Watch/Watch";
+import Channel from "./pages/Channel/Channel";
 
-import React, { lazy } from "react";
+// import React, { lazy } from "react";
 
-const Home = lazy(() => import("./pages/Home/Home"));
-const Result = lazy(() => import("./pages/Result/Result"));
-const Watch = lazy(() => import("./pages/Watch/Watch"));
-const Channel = lazy(() => import("./pages/Channel/Channel"));
+// const Home = lazy(() => import("./pages/Home/Home"));
+// const Result = lazy(() => import("./pages/Result/Result"));
+// const Watch = lazy(() => import("./pages/Watch/Watch"));
+// const Channel = lazy(() => import("./pages/Channel/Channel"));
 
 const routes = [
   {
@@ -32,6 +32,11 @@ const routes = [
     main: ({ match, location }) => (
       <Channel match={match} location={location} />
     ),
+  },
+  {
+    path: "*",
+    exact: true,
+    main: () => <h1>Error!!!!!!!!!!</h1>,
   },
 ];
 
